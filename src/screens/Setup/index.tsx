@@ -47,11 +47,11 @@ export function Setup() {
           >
             Currency
           </h2>
-          <div
-            className="flex gap-2 flex-wrap"
-            role="group"
+          <fieldset
+            className="flex gap-2 flex-wrap border-0 p-0 m-0"
             aria-labelledby="currency-label"
           >
+            <legend className="sr-only">Currency</legend>
             {(Object.keys(CURRENCY_CONFIG) as Currency[]).map((c) => (
               <button
                 key={c}
@@ -68,7 +68,7 @@ export function Setup() {
                 {CURRENCY_CONFIG[c].symbol} {c}
               </button>
             ))}
-          </div>
+          </fieldset>
         </section>
 
         <section aria-labelledby="people-label">

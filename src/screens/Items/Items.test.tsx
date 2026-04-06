@@ -1,6 +1,6 @@
 // src/screens/Items/Items.test.tsx
 
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { useBillStore } from '../../store'

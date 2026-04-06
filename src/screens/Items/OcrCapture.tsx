@@ -1,6 +1,6 @@
 import { useRef } from 'react'
-import { useOcrStore, useBillStore } from '../../store'
-import { preprocessImage, runOcr, parseReceiptLines } from '../../lib/ocr'
+import { parseReceiptLines, preprocessImage, runOcr } from '../../lib/ocr'
+import { useBillStore, useOcrStore } from '../../store'
 
 interface OcrCaptureProps {
   onClose: () => void
@@ -8,7 +8,8 @@ interface OcrCaptureProps {
 
 export function OcrCapture({ onClose }: OcrCaptureProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const { status, progress, setStatus, setProgress, setCandidates, clearOcr } = useOcrStore()
+  const { status, progress, setStatus, setProgress, setCandidates, clearOcr } =
+    useOcrStore()
   const currency = useBillStore((s) => s.currency)
 
   const handleFile = async (file: File) => {
@@ -38,7 +39,11 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-ink/40 flex items-end z-50" role="dialog" aria-modal="true">
+    <div
+      className="fixed inset-0 bg-ink/40 flex items-end z-50"
+      role="dialog"
+      aria-modal="true"
+    >
       <div
         className="bg-bg w-full rounded-t-2xl p-6"
         style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}

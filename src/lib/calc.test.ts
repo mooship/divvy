@@ -22,7 +22,9 @@ describe('calculateTotals', () => {
       items: [{ id: 'i1', name: 'Pizza', price: 2000, assignedTo: ['alice'] }],
     })
     const totals = calculateTotals(bill)
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
     const alice = totals.find((t) => t.personId === 'alice')!
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
     const bob = totals.find((t) => t.personId === 'bob')!
     expect(alice.itemsSubtotal).toBe(2000)
     expect(bob.itemsSubtotal).toBe(0)
@@ -35,7 +37,9 @@ describe('calculateTotals', () => {
       ],
     })
     const totals = calculateTotals(bill)
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
     const alice = totals.find((t) => t.personId === 'alice')!
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
     const bob = totals.find((t) => t.personId === 'bob')!
     expect(alice.itemsSubtotal).toBe(500)
     expect(bob.itemsSubtotal).toBe(500)
@@ -49,7 +53,9 @@ describe('calculateTotals', () => {
       ],
     })
     const totals = calculateTotals(bill)
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
     const alice = totals.find((t) => t.personId === 'alice')!
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
     const bob = totals.find((t) => t.personId === 'bob')!
     expect(alice.itemsSubtotal).toBe(51)
     expect(bob.itemsSubtotal).toBe(50)
@@ -64,7 +70,9 @@ describe('calculateTotals', () => {
       tip: { type: 'percentage', value: 10 },
     })
     const totals = calculateTotals(bill)
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
     const alice = totals.find((t) => t.personId === 'alice')!
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
     const bob = totals.find((t) => t.personId === 'bob')!
     expect(alice.tipShare).toBe(600)
     expect(bob.tipShare).toBe(200)
@@ -80,7 +88,9 @@ describe('calculateTotals', () => {
       tip: { type: 'fixed', value: 800 },
     })
     const totals = calculateTotals(bill)
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
     const alice = totals.find((t) => t.personId === 'alice')!
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
     const bob = totals.find((t) => t.personId === 'bob')!
     expect(alice.tipShare).toBe(600)
     expect(bob.tipShare).toBe(200)
@@ -93,6 +103,7 @@ describe('calculateTotals', () => {
       deliveryFee: { type: 'fixed', value: 200 },
     })
     const totals = calculateTotals(bill)
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
     const alice = totals.find((t) => t.personId === 'alice')!
     expect(alice.total).toBe(1300)
   })

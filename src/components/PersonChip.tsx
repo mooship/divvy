@@ -22,6 +22,7 @@ export function PersonChip({
 
   return (
     <span
+      role="img"
       className={clsx(
         'inline-flex items-center justify-center rounded-full font-bold text-ink select-none shrink-0',
         size === 'sm' ? 'w-7 h-7 text-xs' : 'w-10 h-10 text-sm',

@@ -1,5 +1,5 @@
-import { useBillStore, useOcrStore } from '../../store'
 import { CurrencyInput } from '../../components/CurrencyInput'
+import { useBillStore, useOcrStore } from '../../store'
 
 interface OcrConfirmProps {
   onClose: () => void
@@ -29,14 +29,19 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
 
   if (candidates.length === 0) {
     return (
-      <div className="fixed inset-0 bg-ink/40 flex items-end z-50" role="dialog" aria-modal="true">
+      <div
+        className="fixed inset-0 bg-ink/40 flex items-end z-50"
+        role="dialog"
+        aria-modal="true"
+      >
         <div
           className="bg-bg w-full rounded-t-2xl p-6"
           style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}
         >
           <h2 className="text-lg font-bold text-ink mb-2">No items found</h2>
           <p className="text-muted text-sm mb-4">
-            The receipt scan didn't find any items. Try again with a clearer photo.
+            The receipt scan didn't find any items. Try again with a clearer
+            photo.
           </p>
           <button
             type="button"
@@ -54,7 +59,11 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-ink/40 flex items-end z-50" role="dialog" aria-modal="true">
+    <div
+      className="fixed inset-0 bg-ink/40 flex items-end z-50"
+      role="dialog"
+      aria-modal="true"
+    >
       <div
         className="bg-bg w-full rounded-t-2xl p-6 max-h-[90vh] flex flex-col"
         style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}
@@ -64,15 +73,23 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
           Review the scanned items. Uncheck any you don't want to add.
         </p>
 
-        <ul className="flex flex-col gap-2 overflow-y-auto flex-1 mb-4" aria-label="Scanned items">
+        <ul
+          className="flex flex-col gap-2 overflow-y-auto flex-1 mb-4"
+          aria-label="Scanned items"
+        >
           {candidates.map((candidate, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: OCR candidates don't reorder
             <li key={i} className="flex items-start gap-2">
               <button
                 type="button"
                 onClick={() => toggleCandidate(i)}
                 className="mt-3 w-5 h-5 rounded border-2 border-coral flex items-center justify-center shrink-0 focus-ring"
                 aria-pressed={candidate.selected}
-                aria-label={candidate.selected ? `Deselect ${candidate.name}` : `Select ${candidate.name}`}
+                aria-label={
+                  candidate.selected
+                    ? `Deselect ${candidate.name}`
+                    : `Select ${candidate.name}`
+                }
               >
                 {candidate.selected && (
                   <span aria-hidden="true" className="text-xs text-coral">

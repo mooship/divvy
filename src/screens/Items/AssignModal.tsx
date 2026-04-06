@@ -57,43 +57,44 @@ export function AssignModal({ itemId, onClose }: AssignModalProps) {
             Tap people to split this item between them
           </Dialog.Description>
 
-          <ul
-            className="flex flex-col gap-2 mb-6"
-            role="group"
-            aria-label="People to assign"
-          >
-            {people.map((person, i) => {
-              const isSelected = selected.has(person.id)
-              return (
-                <li key={person.id}>
-                  <button
-                    type="button"
-                    onClick={() => toggle(person.id)}
-                    className={clsx(
-                      'w-full flex items-center gap-3 p-3 rounded-xl transition-colors focus-ring',
-                      isSelected
-                        ? 'bg-teal/20 border-2 border-teal'
-                        : 'bg-surface border-2 border-transparent',
-                    )}
-                    aria-pressed={isSelected}
-                  >
-                    <PersonChip
-                      name={person.name}
-                      index={i}
-                      size="sm"
-                      decorative
-                    />
-                    <span className="font-medium text-ink">{person.name}</span>
-                    {isSelected && (
-                      <span className="ml-auto" aria-hidden="true">
-                        ✅
+          <fieldset className="mb-6">
+            <legend className="sr-only">People to assign</legend>
+            <ul className="flex flex-col gap-2">
+              {people.map((person, i) => {
+                const isSelected = selected.has(person.id)
+                return (
+                  <li key={person.id}>
+                    <button
+                      type="button"
+                      onClick={() => toggle(person.id)}
+                      className={clsx(
+                        'w-full flex items-center gap-3 p-3 rounded-xl transition-colors focus-ring',
+                        isSelected
+                          ? 'bg-teal/20 border-2 border-teal'
+                          : 'bg-surface border-2 border-transparent',
+                      )}
+                      aria-pressed={isSelected}
+                    >
+                      <PersonChip
+                        name={person.name}
+                        index={i}
+                        size="sm"
+                        decorative
+                      />
+                      <span className="font-medium text-ink">
+                        {person.name}
                       </span>
-                    )}
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
+                      {isSelected && (
+                        <span className="ml-auto" aria-hidden="true">
+                          ✅
+                        </span>
+                      )}
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </fieldset>
 
           <div aria-live="polite" className="sr-only">
             {selected.size > 0

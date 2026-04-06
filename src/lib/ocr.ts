@@ -1,13 +1,35 @@
 import { CURRENCY_CONFIG, type Currency } from '../types'
 
 const STRUCTURAL_KEYWORDS = [
-  'total', 'subtotal', 'sub-total', 'sub total',
-  'vat', 'tax', 'gst', 'hst', 'pst',
-  'change', 'balance', 'amount due',
-  'cash', 'card', 'visa', 'mastercard', 'amex', 'credit', 'debit',
-  'tip', 'gratuity', 'service charge',
-  'delivery', 'thank you', 'receipt', 'invoice',
-  'discount', 'coupon', 'promo',
+  'total',
+  'subtotal',
+  'sub-total',
+  'sub total',
+  'vat',
+  'tax',
+  'gst',
+  'hst',
+  'pst',
+  'change',
+  'balance',
+  'amount due',
+  'cash',
+  'card',
+  'visa',
+  'mastercard',
+  'amex',
+  'credit',
+  'debit',
+  'tip',
+  'gratuity',
+  'service charge',
+  'delivery',
+  'thank you',
+  'receipt',
+  'invoice',
+  'discount',
+  'coupon',
+  'promo',
 ]
 
 export interface ParsedItem {
@@ -31,9 +53,7 @@ export function parseReceiptLines(
 
     const dec = config.decimalSeparator === '.' ? '\\.' : ','
     const sym = config.symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    const priceRegex = new RegExp(
-      `(?:${sym}\\s*)?(\\d{1,6}${dec}\\d{2})\\s*$`,
-    )
+    const priceRegex = new RegExp(`(?:${sym}\\s*)?(\\d{1,6}${dec}\\d{2})\\s*$`)
 
     const match = trimmed.match(priceRegex)
     if (!match || match.index === undefined) {
@@ -42,14 +62,14 @@ export function parseReceiptLines(
 
     const priceStr = match[1].replace(config.decimalSeparator, '.')
     const price = Math.round(parseFloat(priceStr) * 100)
-    if (isNaN(price) || price <= 0) {
+    if (Number.isNaN(price) || price <= 0) {
       continue
     }
 
     let name = trimmed.slice(0, match.index).trim()
 
     const lower = name.toLowerCase()
-    if (STRUCTURAL_KEYWORDS.some(kw => lower.includes(kw))) {
+    if (STRUCTURAL_KEYWORDS.some((kw) => lower.includes(kw))) {
       continue
     }
 
@@ -77,7 +97,11 @@ export function preprocessImage(imageFile: File): Promise<string> {
       const canvas = document.createElement('canvas')
       canvas.width = img.width
       canvas.height = img.height
-      const ctx = canvas.getContext('2d')!
+      const ctx = canvas.getContext('2d')
+      if (!ctx) {
+        reject(new Error('Failed to get 2d canvas context'))
+        return
+      }
       ctx.drawImage(img, 0, 0)
 
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
@@ -117,7 +141,7 @@ export async function runOcr(
     const { createWorker } = await import('tesseract.js')
     const state: WorkerState = { worker: null as never, progressCallback: null }
     state.worker = await createWorker('eng', 1, {
-      logger: m => {
+      logger: (m) => {
         if (m.status === 'recognizing text' && state.progressCallback) {
           state.progressCallback(Math.round(10 + m.progress * 80))
         }

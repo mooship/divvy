@@ -58,12 +58,18 @@ export function Home() {
 
       {recentBills.length > 0 && (
         <section className="mt-8" aria-labelledby="recent-label">
-          <h2 id="recent-label" className="text-xs font-bold text-muted uppercase tracking-wider mb-3">
+          <h2
+            id="recent-label"
+            className="text-xs font-bold text-muted uppercase tracking-wider mb-3"
+          >
             Recent bills
           </h2>
           <ul className="flex flex-col gap-2">
             {recentBills.map((bill) => (
-              <li key={bill.id} className="card p-3 flex justify-between items-center">
+              <li
+                key={bill.id}
+                className="card p-3 flex justify-between items-center"
+              >
                 <div>
                   <p className="font-medium text-ink">
                     {bill.peopleCount} people

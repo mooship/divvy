@@ -1,5 +1,5 @@
 // src/lib/ocr.test.ts
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { parseReceiptLines } from './ocr'
 
 describe('parseReceiptLines', () => {

@@ -45,7 +45,7 @@ export function CurrencyInput({
       .replace(new RegExp(`\\${config.thousandsSeparator}`, 'g'), '')
       .replace(config.decimalSeparator, '.')
     const parsed = parseFloat(normalised)
-    if (!isNaN(parsed) && parsed >= 0) {
+    if (!Number.isNaN(parsed) && parsed >= 0) {
       const cents = Math.round(parsed * 100)
       onChange(cents)
       setLocalValue(

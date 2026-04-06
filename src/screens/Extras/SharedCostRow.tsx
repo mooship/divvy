@@ -18,14 +18,13 @@ export function SharedCostRow({
   onChange,
 }: SharedCostRowProps) {
   return (
-    <div className="card p-4" aria-labelledby={labelId}>
+    <section className="card p-4" aria-labelledby={labelId}>
       <div className="flex items-center justify-between mb-3">
         <h2 id={labelId} className="font-bold text-ink">
           {label}
         </h2>
-        <div
+        <fieldset
           className="flex rounded-lg overflow-hidden border-2 border-surface"
-          role="group"
           aria-label={`${label} type`}
         >
           <button
@@ -54,7 +53,7 @@ export function SharedCostRow({
           >
             Fixed
           </button>
-        </div>
+        </fieldset>
       </div>
 
       {value.type === 'percentage' ? (
@@ -72,7 +71,7 @@ export function SharedCostRow({
               const n = parseFloat(e.target.value)
               onChange({
                 type: 'percentage',
-                value: isNaN(n) ? 0 : Math.max(0, n),
+                value: Number.isNaN(n) ? 0 : Math.max(0, n),
               })
             }}
             placeholder="0"
@@ -98,6 +97,6 @@ export function SharedCostRow({
           />
         </>
       )}
-    </div>
+    </section>
   )
 }
