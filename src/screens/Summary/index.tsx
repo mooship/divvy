@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useShallow } from 'zustand/shallow'
 import { BottomAction } from '../../components/BottomAction'
 import { calculateTotals, formatCents } from '../../lib/calc'
-import { decodeBill } from '../../lib/sharing'
+import { decodeBill, encodeBill } from '../../lib/sharing'
 import { useBillStore } from '../../store'
 import type { Bill } from '../../types'
 import { PersonCard } from './PersonCard'
@@ -42,7 +42,6 @@ export function Summary({ readOnly = false }: SummaryProps) {
     if (!bill) {
       return
     }
-    const { encodeBill } = await import('../../lib/sharing')
     const url = `${window.location.origin}/bill?d=${encodeBill(bill)}`
     try {
       if (navigator.share) {
