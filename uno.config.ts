@@ -13,8 +13,8 @@ export default defineConfig({
       muted: '#8C7A6B',
       danger: '#E85D5D',
     },
-    fontFamily: {
-      sans: ['Nunito Variable', 'sans-serif'],
+    font: {
+      sans: 'Nunito Variable, sans-serif',
     },
   },
   shortcuts: {
