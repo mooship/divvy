@@ -1,8 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { RouterProvider } from 'react-router-dom'
+import '@fontsource-variable/nunito'
+import 'virtual:uno.css'
+import { router } from './router'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <div>Loading...</div>
+    <RouterProvider router={router} />
   </React.StrictMode>,
 )
