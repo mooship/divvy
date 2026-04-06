@@ -6,8 +6,9 @@ import { PersonChip } from '../../components/PersonChip'
 import { formatCents } from '../../lib/calc'
 import { useBillStore } from '../../store'
 
-// Placeholders — replaced in Tasks 11 and 15
-const AssignModal = (_props: { itemId: string; onClose: () => void }) => null
+import { AssignModal } from './AssignModal'
+
+// Placeholder — replaced in Task 15
 const OcrCapture = (_props: { onClose: () => void }) => null
 
 export function Items() {
