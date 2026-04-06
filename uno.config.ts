@@ -27,7 +27,7 @@ export default defineConfig({
       danger: '#E85D5D',
     },
     font: {
-      sans: 'Nunito Variable, sans-serif',
+      sans: '"Nunito Variable", "Nunito Variable fallback", sans-serif',
     },
   },
   shortcuts: {
