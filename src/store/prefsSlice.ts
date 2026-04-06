@@ -15,8 +15,8 @@ interface PrefsActions {
 export const usePrefsStore = create<PrefsState & PrefsActions>()(
   persist(
     (set) => ({
-      defaultCurrency: 'ZAR' as Currency,
-      ocrLanguage: 'eng' as OcrLanguage,
+      defaultCurrency: 'ZAR',
+      ocrLanguage: 'eng',
       setDefaultCurrency: (currency) => set({ defaultCurrency: currency }),
       setOcrLanguage: (language) => set({ ocrLanguage: language }),
     }),

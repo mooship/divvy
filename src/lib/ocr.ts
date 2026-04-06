@@ -219,8 +219,8 @@ export async function runOcr(
   language: OcrLanguage = 'eng',
 ): Promise<OcrLine[]> {
   if (_workerState && _workerState.language !== language) {
-    await _workerState.worker.terminate()
-    _workerState = null
+    await _workerState.worker.reinitialize(language)
+    _workerState.language = language
   }
 
   if (!_workerState) {

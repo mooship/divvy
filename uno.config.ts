@@ -38,6 +38,7 @@ export default defineConfig({
       'bg-transparent text-ink rounded-lg font-medium h-12 px-4 transition-transform active:scale-95',
     'input-text':
       'bg-white border-2 border-surface rounded-lg px-4 h-12 text-ink text-base w-full',
+    'section-label': 'text-xs font-bold text-muted uppercase tracking-wider',
     'focus-ring':
       'focus-visible:outline-3 focus-visible:outline-coral focus-visible:outline-offset-2',
   },

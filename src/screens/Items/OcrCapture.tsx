@@ -57,10 +57,7 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
         <>
           <h2 className="text-lg font-bold text-ink mb-4">Scan receipt</h2>
           <div className="mb-4">
-            <label
-              htmlFor="ocr-language"
-              className="block text-xs font-bold text-muted uppercase tracking-wider mb-1"
-            >
+            <label htmlFor="ocr-language" className="section-label block mb-1">
               Receipt language
             </label>
             <select

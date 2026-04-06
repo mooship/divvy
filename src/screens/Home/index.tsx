@@ -59,10 +59,7 @@ export function Home() {
 
       {recentBills.length > 0 && (
         <section className="mt-8" aria-labelledby="recent-label">
-          <h2
-            id="recent-label"
-            className="text-xs font-bold text-muted uppercase tracking-wider mb-3"
-          >
+          <h2 id="recent-label" className="section-label mb-3">
             Recent bills
           </h2>
           <ul className="flex flex-col gap-2">
