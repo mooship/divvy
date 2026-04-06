@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { centsToDecimal } from '../lib/calc'
 import { CURRENCY_CONFIG, type Currency } from '../types'
 
@@ -12,6 +12,19 @@ interface CurrencyInputProps {
   placeholder?: string
 }
 
+function parseCents(
+  raw: string,
+  thousandsRe: RegExp,
+  decSep: string,
+): number | null {
+  const normalised = raw.replace(thousandsRe, '').replace(decSep, '.')
+  const parsed = parseFloat(normalised)
+  if (!Number.isNaN(parsed) && parsed >= 0) {
+    return Math.round(parsed * 100)
+  }
+  return null
+}
+
 export function CurrencyInput({
   value,
   currency,
@@ -21,6 +34,10 @@ export function CurrencyInput({
   placeholder,
 }: CurrencyInputProps) {
   const config = CURRENCY_CONFIG[currency]
+  const thousandsRe = useMemo(
+    () => new RegExp(`\\${config.thousandsSeparator}`, 'g'),
+    [config.thousandsSeparator],
+  )
   const [isFocused, setIsFocused] = useState(false)
   const [localValue, setLocalValue] = useState(() =>
     value > 0 ? centsToDecimal(value, config.decimalSeparator) : '',
@@ -36,12 +53,8 @@ export function CurrencyInput({
 
   const handleBlur = () => {
     setIsFocused(false)
-    const normalised = localValue
-      .replace(new RegExp(`\\${config.thousandsSeparator}`, 'g'), '')
-      .replace(config.decimalSeparator, '.')
-    const parsed = parseFloat(normalised)
-    if (!Number.isNaN(parsed) && parsed >= 0) {
-      const cents = Math.round(parsed * 100)
+    const cents = parseCents(localValue, thousandsRe, config.decimalSeparator)
+    if (cents !== null) {
       onChange(cents)
       setLocalValue(centsToDecimal(cents, config.decimalSeparator))
     } else {
@@ -69,12 +82,9 @@ export function CurrencyInput({
         onChange={(e) => {
           const raw = e.target.value
           setLocalValue(raw)
-          const normalised = raw
-            .replace(new RegExp(`\\${config.thousandsSeparator}`, 'g'), '')
-            .replace(config.decimalSeparator, '.')
-          const parsed = parseFloat(normalised)
-          if (!Number.isNaN(parsed) && parsed >= 0) {
-            onChange(Math.round(parsed * 100))
+          const cents = parseCents(raw, thousandsRe, config.decimalSeparator)
+          if (cents !== null) {
+            onChange(cents)
           } else if (raw === '') {
             onChange(0)
           }

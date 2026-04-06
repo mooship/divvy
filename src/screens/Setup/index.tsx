@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useShallow } from 'zustand/shallow'
 import { BottomAction } from '../../components/BottomAction'
 import { PersonChip } from '../../components/PersonChip'
 import { useBillStore, usePrefsStore } from '../../store'
@@ -9,7 +10,15 @@ import { CURRENCY_CONFIG, type Currency } from '../../types'
 export function Setup() {
   const navigate = useNavigate()
   const { currency, setCurrency, people, addPerson, removePerson } =
-    useBillStore()
+    useBillStore(
+      useShallow((s) => ({
+        currency: s.currency,
+        setCurrency: s.setCurrency,
+        people: s.people,
+        addPerson: s.addPerson,
+        removePerson: s.removePerson,
+      })),
+    )
   const setDefaultCurrency = usePrefsStore((s) => s.setDefaultCurrency)
   const [nameInput, setNameInput] = useState('')
 

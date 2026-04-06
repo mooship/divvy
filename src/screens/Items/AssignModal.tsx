@@ -1,6 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import clsx from 'clsx'
 import { useState } from 'react'
+import { useShallow } from 'zustand/shallow'
 import { PersonChip } from '../../components/PersonChip'
 import { useBillStore } from '../../store'
 
@@ -10,7 +11,13 @@ interface AssignModalProps {
 }
 
 export function AssignModal({ itemId, onClose }: AssignModalProps) {
-  const { items, people, assignItem } = useBillStore()
+  const { items, people, assignItem } = useBillStore(
+    useShallow((s) => ({
+      items: s.items,
+      people: s.people,
+      assignItem: s.assignItem,
+    })),
+  )
   const item = items.find((i) => i.id === itemId)
   const [selected, setSelected] = useState(
     () => new Set(item?.assignedTo ?? []),
