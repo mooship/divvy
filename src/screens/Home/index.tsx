@@ -29,7 +29,9 @@ export function Home() {
     <div className="min-h-screen bg-bg flex flex-col px-4 pt-4 pb-8">
       <div className="flex-1 flex flex-col items-center justify-center gap-6">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-ink mb-1">Split the bill fairly.</h1>
+          <h1 className="text-2xl font-bold text-ink mb-1">
+            Split the bill fairly.
+          </h1>
           <p className="text-muted">Add items, assign to people, done.</p>
         </div>
 
