@@ -66,7 +66,19 @@ export function CurrencyInput({
         inputMode="decimal"
         autoComplete="off"
         value={localValue}
-        onChange={(e) => setLocalValue(e.target.value)}
+        onChange={(e) => {
+          const raw = e.target.value
+          setLocalValue(raw)
+          const normalised = raw
+            .replace(new RegExp(`\\${config.thousandsSeparator}`, 'g'), '')
+            .replace(config.decimalSeparator, '.')
+          const parsed = parseFloat(normalised)
+          if (!Number.isNaN(parsed) && parsed >= 0) {
+            onChange(Math.round(parsed * 100))
+          } else if (raw === '') {
+            onChange(0)
+          }
+        }}
         onFocus={() => setIsFocused(true)}
         onBlur={handleBlur}
         placeholder={placeholder ?? `0${config.decimalSeparator}00`}

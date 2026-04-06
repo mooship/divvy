@@ -1,5 +1,6 @@
 import babel from '@rolldown/plugin-babel'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import { FontaineTransform } from 'fontaine'
 import UnoCSS from 'unocss/vite'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -31,6 +32,9 @@ export default defineConfig({
   },
   plugins: [
     UnoCSS(),
+    FontaineTransform.vite({
+      fallbacks: ['Arial'],
+    }),
     react(),
     babel({ presets: [reactCompilerPreset()] }),
     VitePWA({
