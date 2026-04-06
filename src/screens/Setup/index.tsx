@@ -1,0 +1,148 @@
+import clsx from 'clsx'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { BottomAction } from '../../components/BottomAction'
+import { PersonChip } from '../../components/PersonChip'
+import { useBillStore, usePrefsStore } from '../../store'
+import { CURRENCY_CONFIG, type Currency } from '../../types'
+
+export function Setup() {
+  const navigate = useNavigate()
+  const { currency, setCurrency, people, addPerson, removePerson } =
+    useBillStore()
+  const setDefaultCurrency = usePrefsStore((s) => s.setDefaultCurrency)
+  const [nameInput, setNameInput] = useState('')
+
+  const handleCurrencyChange = (c: Currency) => {
+    setCurrency(c)
+    setDefaultCurrency(c)
+  }
+
+  const handleAddPerson = () => {
+    const trimmed = nameInput.trim()
+    if (!trimmed) return
+    addPerson(trimmed)
+    setNameInput('')
+  }
+
+  const canProceed = people.length >= 2
+
+  return (
+    <div className="min-h-screen bg-bg pb-24">
+      <div className="px-4 pt-8">
+        <h1 className="text-2xl font-bold text-ink mb-6">Set up the bill</h1>
+
+        <section className="mb-8" aria-labelledby="currency-label">
+          <h2
+            id="currency-label"
+            className="text-xs font-bold text-muted uppercase tracking-wider mb-3"
+          >
+            Currency
+          </h2>
+          <div
+            className="flex gap-2 flex-wrap"
+            role="group"
+            aria-labelledby="currency-label"
+          >
+            {(Object.keys(CURRENCY_CONFIG) as Currency[]).map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => handleCurrencyChange(c)}
+                className={clsx(
+                  'px-4 h-10 rounded-lg font-medium transition-colors focus-ring',
+                  currency === c
+                    ? 'bg-coral text-white'
+                    : 'bg-surface text-ink',
+                )}
+                aria-pressed={currency === c}
+              >
+                {CURRENCY_CONFIG[c].symbol} {c}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section aria-labelledby="people-label">
+          <h2
+            id="people-label"
+            className="text-xs font-bold text-muted uppercase tracking-wider mb-3"
+          >
+            Who's at the table?
+          </h2>
+
+          {people.length < 2 && (
+            <p className="text-sm text-muted mb-4" aria-live="polite">
+              <span aria-hidden="true">👥</span> Add at least 2 people to
+              continue
+            </p>
+          )}
+
+          <ul
+            className="flex flex-col gap-2 mb-4"
+            aria-label="People at the table"
+          >
+            {people.map((person, i) => (
+              <li
+                key={person.id}
+                className="card flex items-center justify-between p-3"
+              >
+                <div className="flex items-center gap-3">
+                  <PersonChip name={person.name} index={i} />
+                  <span className="font-medium text-ink">{person.name}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removePerson(person.id)}
+                  className="text-muted hover:text-danger transition-colors p-2 focus-ring rounded-lg"
+                  aria-label={`Remove ${person.name}`}
+                >
+                  <span aria-hidden="true">🗑️</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <label htmlFor="person-name" className="sr-only">
+                Person's name
+              </label>
+              <input
+                id="person-name"
+                type="text"
+                inputMode="text"
+                autoComplete="off"
+                value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleAddPerson()}
+                placeholder="Add a name..."
+                className="input-text focus-ring"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleAddPerson}
+              disabled={!nameInput.trim()}
+              className="btn-primary focus-ring px-4 min-w-12"
+              aria-label="Add person"
+            >
+              <span aria-hidden="true">➕</span>
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <BottomAction>
+        <button
+          type="button"
+          onClick={() => navigate('/items')}
+          disabled={!canProceed}
+          className="btn-primary w-full focus-ring"
+        >
+          Next — Add items
+        </button>
+      </BottomAction>
+    </div>
+  )
+}
