@@ -56,17 +56,28 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
       return new Map(people.map((p, i) => [p.id, even + (i < rem ? 1 : 0)]))
     }
 
-    const rawShares = people.map((p) => {
+    const exact = people.map((p) => {
       const sub = itemSubtotals.get(p.id) ?? 0
-      return Math.floor((total * sub) / billSubtotal)
+      return (total * sub) / billSubtotal
     })
+    const floors = exact.map(Math.floor)
+    let rem = total - floors.reduce((a, b) => a + b, 0)
 
-    const allocated = rawShares.reduce((a, b) => a + b, 0)
-    const rem = total - allocated
+    // Largest-remainder method
+    const order = floors
+      .map((floor, i) => ({ i, frac: exact[i] - floor }))
+      .sort((a, b) => b.frac - a.frac || a.i - b.i)
 
-    return new Map(
-      people.map((p, i) => [p.id, rawShares[i] + (i < rem ? 1 : 0)]),
-    )
+    const result = [...floors]
+    for (const { i } of order) {
+      if (rem <= 0) {
+        break
+      }
+      result[i]++
+      rem--
+    }
+
+    return new Map(people.map((p, i) => [p.id, result[i]]))
   }
 
   const tipShares = distribute(tipTotal)

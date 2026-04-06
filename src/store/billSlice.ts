@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { calculateTotals } from '../lib/calc'
+import { encodeBill } from '../lib/sharing'
 import type { Bill, BillSummary, Currency, Item, SharedCost } from '../types'
 
 interface BillActions {
@@ -18,7 +19,6 @@ interface BillActions {
     cost: SharedCost,
   ) => void
   setCurrency: (currency: Currency) => void
-  loadBill: (bill: Bill) => void
   reset: () => void
 }
 
@@ -37,19 +37,28 @@ function saveToRecent(bill: Bill): void {
     peopleCount: bill.people.length,
     total: grandTotal,
     currency: bill.currency,
+    encoded: encodeBill(bill),
   }
-  const existing: BillSummary[] = JSON.parse(
-    localStorage.getItem(RECENT_BILLS_KEY) ?? '[]',
-  )
-  const updated = [summary, ...existing.filter((b) => b.id !== bill.id)].slice(
-    0,
-    MAX_RECENT,
-  )
-  localStorage.setItem(RECENT_BILLS_KEY, JSON.stringify(updated))
+  try {
+    const existing: BillSummary[] = JSON.parse(
+      localStorage.getItem(RECENT_BILLS_KEY) ?? '[]',
+    )
+    const updated = [
+      summary,
+      ...existing.filter((b) => b.id !== bill.id),
+    ].slice(0, MAX_RECENT)
+    localStorage.setItem(RECENT_BILLS_KEY, JSON.stringify(updated))
+  } catch {
+    // localStorage unavailable or corrupt — silently skip
+  }
 }
 
 export function getRecentBills(): BillSummary[] {
-  return JSON.parse(localStorage.getItem(RECENT_BILLS_KEY) ?? '[]')
+  try {
+    return JSON.parse(localStorage.getItem(RECENT_BILLS_KEY) ?? '[]')
+  } catch {
+    return []
+  }
 }
 
 const DEFAULT_BILL: Bill = {
@@ -101,7 +110,6 @@ export const useBillStore = create<Bill & BillActions>()(
         })),
       setSharedCost: (key, cost) => set({ [key]: cost }),
       setCurrency: (currency) => set({ currency }),
-      loadBill: (bill) => set(bill),
       reset: () =>
         set((state) => {
           saveToRecent(state)

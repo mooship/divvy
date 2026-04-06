@@ -1,3 +1,4 @@
+import { Receipt, Share2 } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useShallow } from 'zustand/shallow'
@@ -54,11 +55,11 @@ export function Summary({ readOnly = false }: SummaryProps) {
     }
   }
 
-  if (totals.length === 0) {
+  if (!bill || totals.length === 0) {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center px-4">
-        <p className="text-muted text-center">
-          <span aria-hidden="true">🧾</span> No bill data found.
+        <p className="text-muted text-center flex items-center gap-2">
+          <Receipt className="w-4 h-4" aria-hidden="true" /> No bill data found.
         </p>
       </div>
     )
@@ -76,7 +77,7 @@ export function Summary({ readOnly = false }: SummaryProps) {
             <PersonCard
               key={total.personId}
               total={total}
-              currency={bill?.currency ?? 'USD'}
+              currency={bill.currency}
               personIndex={i}
             />
           ))}
@@ -85,7 +86,7 @@ export function Summary({ readOnly = false }: SummaryProps) {
         <div className="card p-4 mt-4 text-center">
           <p className="text-sm text-muted mb-1">Grand total</p>
           <p className="text-3xl font-bold text-ink" aria-live="polite">
-            {formatCents(grandTotal, bill?.currency ?? 'USD')}
+            {formatCents(grandTotal, bill.currency)}
           </p>
         </div>
       </div>
@@ -98,7 +99,7 @@ export function Summary({ readOnly = false }: SummaryProps) {
             className="btn-primary flex-1 focus-ring"
             aria-label="Share bill"
           >
-            <span aria-hidden="true">📤</span> Share
+            <Share2 className="w-4 h-4" aria-hidden="true" /> Share
           </button>
           {!readOnly && (
             <button

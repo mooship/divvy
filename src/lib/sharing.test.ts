@@ -1,3 +1,4 @@
+import LZString from 'lz-string'
 import { describe, expect, it } from 'vitest'
 import type { Bill } from '../types'
 import { decodeBill, encodeBill } from './sharing'
@@ -42,5 +43,48 @@ describe('sharing', () => {
 
   it('returns null for empty string', () => {
     expect(decodeBill('')).toBeNull()
+  })
+
+  it('returns null for valid JSON that is not a bill (missing fields)', () => {
+    const encoded = LZString.compressToEncodedURIComponent(
+      JSON.stringify({ foo: 'bar' }),
+    )
+    expect(decodeBill(encoded)).toBeNull()
+  })
+
+  it('returns null when currency is not a recognised value', () => {
+    const bad = { ...bill, currency: 'XYZ' }
+    const encoded = LZString.compressToEncodedURIComponent(JSON.stringify(bad))
+    expect(decodeBill(encoded)).toBeNull()
+  })
+
+  it('returns null when an item has a negative price', () => {
+    const bad = {
+      ...bill,
+      items: [{ id: 'i1', name: 'Pizza', price: -100, assignedTo: [] }],
+    }
+    const encoded = LZString.compressToEncodedURIComponent(JSON.stringify(bad))
+    expect(decodeBill(encoded)).toBeNull()
+  })
+
+  it('returns null when an item has a float price', () => {
+    const bad = {
+      ...bill,
+      items: [{ id: 'i1', name: 'Pizza', price: 10.5, assignedTo: [] }],
+    }
+    const encoded = LZString.compressToEncodedURIComponent(JSON.stringify(bad))
+    expect(decodeBill(encoded)).toBeNull()
+  })
+
+  it('returns null when a shared cost has an invalid type', () => {
+    const bad = { ...bill, tip: { type: 'flat', value: 10 } }
+    const encoded = LZString.compressToEncodedURIComponent(JSON.stringify(bad))
+    expect(decodeBill(encoded)).toBeNull()
+  })
+
+  it('returns null when people array contains a non-object entry', () => {
+    const bad = { ...bill, people: ['alice'] }
+    const encoded = LZString.compressToEncodedURIComponent(JSON.stringify(bad))
+    expect(decodeBill(encoded)).toBeNull()
   })
 })
