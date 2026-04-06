@@ -109,7 +109,7 @@ export function Setup() {
                 <button
                   type="button"
                   onClick={() => removePerson(person.id)}
-                  className="text-muted hover:text-danger transition-colors p-2 focus-ring rounded-lg flex items-center justify-center"
+                  className="btn-icon-delete"
                   aria-label={`Remove ${person.name}`}
                 >
                   <Trash2 className="w-5 h-5" aria-hidden="true" />

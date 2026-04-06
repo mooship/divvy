@@ -119,7 +119,7 @@ export function Items() {
                     <button
                       type="button"
                       onClick={() => removeItem(item.id)}
-                      className="p-2 min-w-11 min-h-11 text-muted hover:text-danger transition-colors focus-ring rounded-lg shrink-0 flex items-center justify-center"
+                      className="btn-icon-delete"
                       aria-label={`Delete ${item.name}`}
                     >
                       <Trash2 className="w-5 h-5" aria-hidden="true" />

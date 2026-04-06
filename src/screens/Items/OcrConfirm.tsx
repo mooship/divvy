@@ -1,4 +1,5 @@
 import { Check } from 'lucide-react'
+import { useMemo } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { BottomSheet } from '../../components/BottomSheet'
 import { CurrencyInput } from '../../components/CurrencyInput'
@@ -20,8 +21,13 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
   const addItem = useBillStore((s) => s.addItem)
   const currency = useBillStore((s) => s.currency)
 
+  const selectedCandidates = useMemo(
+    () => candidates.filter((c) => c.selected),
+    [candidates],
+  )
+
   const handleConfirm = () => {
-    for (const candidate of candidates.filter((c) => c.selected)) {
+    for (const candidate of selectedCandidates) {
       addItem(candidate.name, candidate.price)
     }
     clearOcr()
@@ -36,7 +42,7 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
     setCandidates(candidates.map((c, i) => (i === index ? { ...c, price } : c)))
   }
 
-  const selectedCount = candidates.filter((c) => c.selected).length
+  const selectedCount = selectedCandidates.length
 
   if (candidates.length === 0) {
     return (

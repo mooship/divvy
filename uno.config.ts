@@ -36,6 +36,8 @@ export default defineConfig({
       'flex items-center justify-center gap-2 bg-gradient-to-b from-[#FF9090] to-coral text-white rounded-2xl font-bold h-12 px-6 transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed',
     'btn-ghost':
       'flex items-center justify-center gap-2 bg-transparent text-ink rounded-2xl font-medium h-12 px-4 transition-transform active:scale-95',
+    'btn-icon-delete':
+      'flex items-center justify-center p-2 min-w-11 min-h-11 shrink-0 text-muted hover:text-danger transition-colors focus-ring rounded-lg',
     'input-text':
       'bg-white border-2 border-surface rounded-xl px-4 h-12 text-ink text-base w-full',
     'section-label': 'text-xs font-bold text-muted',
