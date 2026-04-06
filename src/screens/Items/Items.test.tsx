@@ -1,5 +1,3 @@
-// src/screens/Items/Items.test.tsx
-
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it } from 'vitest'

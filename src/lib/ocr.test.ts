@@ -1,4 +1,3 @@
-// src/lib/ocr.test.ts
 import { describe, expect, it } from 'vitest'
 import { type OcrLine, parseReceiptLines } from './ocr'
 
