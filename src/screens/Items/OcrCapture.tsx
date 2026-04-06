@@ -21,11 +21,10 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
       const processedDataUrl = await preprocessImage(file)
       setProgress(10)
 
-      const text = await runOcr(processedDataUrl, setProgress)
+      const ocrLines = await runOcr(processedDataUrl, setProgress)
       setProgress(95)
 
-      const lines = text.split('\n').filter(Boolean)
-      const parsed = parseReceiptLines(lines, currency)
+      const parsed = parseReceiptLines(ocrLines, currency)
 
       setCandidates(parsed.map((p) => ({ ...p, selected: true })))
       setStatus('done')
