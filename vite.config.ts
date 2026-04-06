@@ -5,6 +5,30 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (
+            id.includes('node_modules/react') ||
+            id.includes('node_modules/react-dom') ||
+            id.includes('node_modules/react-router')
+          ) {
+            return 'vendor'
+          }
+          if (
+            id.includes('node_modules/@radix-ui') ||
+            id.includes('node_modules/clsx')
+          ) {
+            return 'ui'
+          }
+          if (id.includes('node_modules/zustand')) {
+            return 'state'
+          }
+        },
+      },
+    },
+  },
   plugins: [
     UnoCSS(),
     react(),
@@ -20,8 +44,16 @@ export default defineConfig({
         background_color: '#FFF8F0',
         display: 'standalone',
         icons: [
-          { src: 'android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
+          {
+            src: 'android-chrome-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'android-chrome-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
         ],
       },
     }),

@@ -72,11 +72,12 @@ export function Summary({ readOnly = false }: SummaryProps) {
         </h1>
 
         <div className="flex flex-col gap-4">
-          {totals.map((total) => (
+          {totals.map((total, i) => (
             <PersonCard
               key={total.personId}
               total={total}
               currency={bill?.currency ?? 'USD'}
+              personIndex={i}
             />
           ))}
         </div>

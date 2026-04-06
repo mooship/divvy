@@ -88,9 +88,16 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
   })
 }
 
+export function centsToDecimal(
+  cents: number,
+  decimalSeparator: string,
+): string {
+  return (cents / 100).toFixed(2).replace('.', decimalSeparator)
+}
+
 export function formatCents(cents: number, currency: Currency): string {
   const config = CURRENCY_CONFIG[currency]
-  const amount = (cents / 100).toFixed(2).replace('.', config.decimalSeparator)
+  const amount = centsToDecimal(cents, config.decimalSeparator)
   return config.symbolPosition === 'prefix'
     ? `${config.symbol}${amount}`
     : `${amount} ${config.symbol}`

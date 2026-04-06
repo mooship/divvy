@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useShallow } from 'zustand/shallow'
 import { BottomAction } from '../../components/BottomAction'
 import { CurrencyInput } from '../../components/CurrencyInput'
 import { PersonChip } from '../../components/PersonChip'
@@ -12,7 +13,15 @@ import { OcrConfirm } from './OcrConfirm'
 
 export function Items() {
   const navigate = useNavigate()
-  const { items, people, currency, addItem, removeItem } = useBillStore()
+  const { items, people, currency, addItem, removeItem } = useBillStore(
+    useShallow((s) => ({
+      items: s.items,
+      people: s.people,
+      currency: s.currency,
+      addItem: s.addItem,
+      removeItem: s.removeItem,
+    })),
+  )
   const ocrStatus = useOcrStore((s) => s.status)
   const clearOcr = useOcrStore((s) => s.clearOcr)
   const [newName, setNewName] = useState('')

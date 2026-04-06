@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
+import { centsToDecimal } from '../lib/calc'
 import { CURRENCY_CONFIG, type Currency } from '../types'
 
 interface CurrencyInputProps {
@@ -22,25 +23,19 @@ export function CurrencyInput({
   const config = CURRENCY_CONFIG[currency]
   const [isFocused, setIsFocused] = useState(false)
   const [localValue, setLocalValue] = useState(() =>
-    value > 0
-      ? (value / 100).toFixed(2).replace('.', config.decimalSeparator)
-      : '',
+    value > 0 ? centsToDecimal(value, config.decimalSeparator) : '',
   )
 
-  // Sync when value or currency changes externally (e.g. store reset, URL load, currency switch)
   useEffect(() => {
     if (!isFocused) {
       setLocalValue(
-        value > 0
-          ? (value / 100).toFixed(2).replace('.', config.decimalSeparator)
-          : '',
+        value > 0 ? centsToDecimal(value, config.decimalSeparator) : '',
       )
     }
   }, [value, config.decimalSeparator, isFocused])
 
   const handleBlur = () => {
     setIsFocused(false)
-    // Strip thousands separators, then normalise decimal separator to '.'
     const normalised = localValue
       .replace(new RegExp(`\\${config.thousandsSeparator}`, 'g'), '')
       .replace(config.decimalSeparator, '.')
@@ -48,9 +43,7 @@ export function CurrencyInput({
     if (!Number.isNaN(parsed) && parsed >= 0) {
       const cents = Math.round(parsed * 100)
       onChange(cents)
-      setLocalValue(
-        (cents / 100).toFixed(2).replace('.', config.decimalSeparator),
-      )
+      setLocalValue(centsToDecimal(cents, config.decimalSeparator))
     } else {
       onChange(0)
       setLocalValue('')

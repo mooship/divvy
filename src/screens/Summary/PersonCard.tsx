@@ -1,21 +1,14 @@
-import { useMemo } from 'react'
 import { PersonChip } from '../../components/PersonChip'
 import { formatCents } from '../../lib/calc'
-import { useBillStore } from '../../store'
 import type { Currency, PersonTotal } from '../../types'
 
 interface PersonCardProps {
   total: PersonTotal
   currency: Currency
+  personIndex: number
 }
 
-export function PersonCard({ total, currency }: PersonCardProps) {
-  const people = useBillStore((s) => s.people)
-  const personIndex = useMemo(
-    () => people.findIndex((p) => p.id === total.personId),
-    [people, total.personId],
-  )
-
+export function PersonCard({ total, currency, personIndex }: PersonCardProps) {
   return (
     <div className="card p-4">
       <div className="flex items-center gap-3 mb-3">
