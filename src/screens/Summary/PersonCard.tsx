@@ -36,30 +36,20 @@ export function PersonCard({ total, currency, personIndex }: PersonCardProps) {
             </span>
           </li>
         ))}
-        {total.tipShare > 0 && (
-          <li className="flex justify-between text-sm">
-            <span className="text-muted">Tip</span>
-            <span className="text-ink">
-              {formatCents(total.tipShare, currency)}
-            </span>
-          </li>
-        )}
-        {total.serviceFeeShare > 0 && (
-          <li className="flex justify-between text-sm">
-            <span className="text-muted">Service fee</span>
-            <span className="text-ink">
-              {formatCents(total.serviceFeeShare, currency)}
-            </span>
-          </li>
-        )}
-        {total.deliveryFeeShare > 0 && (
-          <li className="flex justify-between text-sm">
-            <span className="text-muted">Delivery fee</span>
-            <span className="text-ink">
-              {formatCents(total.deliveryFeeShare, currency)}
-            </span>
-          </li>
-        )}
+        {(
+          [
+            ['Tip', total.tipShare],
+            ['Service fee', total.serviceFeeShare],
+            ['Delivery fee', total.deliveryFeeShare],
+          ] as const
+        )
+          .filter(([, amount]) => amount > 0)
+          .map(([label, amount]) => (
+            <li key={label} className="flex justify-between text-sm">
+              <span className="text-muted">{label}</span>
+              <span className="text-ink">{formatCents(amount, currency)}</span>
+            </li>
+          ))}
       </ul>
     </section>
   )

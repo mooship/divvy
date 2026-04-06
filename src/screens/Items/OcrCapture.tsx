@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { useShallow } from 'zustand/shallow'
 import { BottomSheet } from '../../components/BottomSheet'
 import { parseReceiptLines, preprocessImage, runOcr } from '../../lib/ocr'
 import { useBillStore, useOcrStore } from '../../store'
@@ -10,7 +11,16 @@ interface OcrCaptureProps {
 export function OcrCapture({ onClose }: OcrCaptureProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { status, progress, setStatus, setProgress, setCandidates, clearOcr } =
-    useOcrStore()
+    useOcrStore(
+      useShallow((s) => ({
+        status: s.status,
+        progress: s.progress,
+        setStatus: s.setStatus,
+        setProgress: s.setProgress,
+        setCandidates: s.setCandidates,
+        clearOcr: s.clearOcr,
+      })),
+    )
   const currency = useBillStore((s) => s.currency)
 
   const handleFile = async (file: File) => {

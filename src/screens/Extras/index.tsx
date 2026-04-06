@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { useShallow } from 'zustand/shallow'
 import { BottomAction } from '../../components/BottomAction'
 import { useBillStore } from '../../store'
 import { SharedCostRow } from './SharedCostRow'
@@ -6,7 +7,15 @@ import { SharedCostRow } from './SharedCostRow'
 export function Extras() {
   const navigate = useNavigate()
   const { tip, serviceFee, deliveryFee, setSharedCost, currency } =
-    useBillStore()
+    useBillStore(
+      useShallow((s) => ({
+        tip: s.tip,
+        serviceFee: s.serviceFee,
+        deliveryFee: s.deliveryFee,
+        setSharedCost: s.setSharedCost,
+        currency: s.currency,
+      })),
+    )
 
   return (
     <div className="min-h-screen bg-bg pb-24">
@@ -19,21 +28,18 @@ export function Extras() {
         <div className="flex flex-col gap-4">
           <SharedCostRow
             label="Tip"
-            labelId="tip"
             value={tip}
             currency={currency}
             onChange={(cost) => setSharedCost('tip', cost)}
           />
           <SharedCostRow
             label="Service fee"
-            labelId="service-fee"
             value={serviceFee}
             currency={currency}
             onChange={(cost) => setSharedCost('serviceFee', cost)}
           />
           <SharedCostRow
             label="Delivery fee"
-            labelId="delivery-fee"
             value={deliveryFee}
             currency={currency}
             onChange={(cost) => setSharedCost('deliveryFee', cost)}

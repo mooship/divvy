@@ -7,7 +7,6 @@ import type { BillSummary } from '../../types'
 
 export function Home() {
   const navigate = useNavigate()
-  // Show Continue only when there's a real bill in progress (has people)
   const hasBill = useBillStore((s) => Boolean(s.id && s.people.length > 0))
   const reset = useBillStore((s) => s.reset)
   const [recentBills, setRecentBills] = useState<BillSummary[]>([])

@@ -58,19 +58,19 @@ export function parseReceiptLines(
   const config = CURRENCY_CONFIG[currency]
   const results: ParsedItem[] = []
 
+  const dec = config.decimalSeparator === '.' ? '\\.' : ','
+  const thou =
+    config.thousandsSeparator === '.' ? '\\.' : config.thousandsSeparator
+  const sym = config.symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const priceRegex = new RegExp(
+    `(?:${sym}\\s*)?(\\d{1,3}(?:${thou}\\d{3})*${dec}\\d{1,3})\\s*$`,
+  )
+
   for (const line of lines) {
     const trimmed = line.text.trim()
     if (!trimmed) {
       continue
     }
-
-    const dec = config.decimalSeparator === '.' ? '\\.' : ','
-    const thou =
-      config.thousandsSeparator === '.' ? '\\.' : config.thousandsSeparator
-    const sym = config.symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    const priceRegex = new RegExp(
-      `(?:${sym}\\s*)?(\\d{1,3}(?:${thou}\\d{3})*${dec}\\d{1,3})\\s*$`,
-    )
 
     const match = trimmed.match(priceRegex)
     if (!match || match.index === undefined) {

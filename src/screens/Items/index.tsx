@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useShallow } from 'zustand/shallow'
 import { BottomAction } from '../../components/BottomAction'
@@ -28,7 +28,14 @@ export function Items() {
   const [newPrice, setNewPrice] = useState(0)
   const [assigningItemId, setAssigningItemId] = useState<string | null>(null)
   const [showOcr, setShowOcr] = useState(false)
-  const personIndexMap = new Map(people.map((p, i) => [p.id, i]))
+  const personById = useMemo(
+    () => new Map(people.map((p) => [p.id, p])),
+    [people],
+  )
+  const personIndexMap = useMemo(
+    () => new Map(people.map((p, i) => [p.id, i])),
+    [people],
+  )
 
   const handleAddItem = (e?: React.FormEvent) => {
     e?.preventDefault()
@@ -74,9 +81,9 @@ export function Items() {
         ) : (
           <ul className="flex flex-col gap-2 mb-4" aria-label="Bill items">
             {items.map((item) => {
-              const assigned = people.filter((p) =>
-                item.assignedTo.includes(p.id),
-              )
+              const assigned = item.assignedTo
+                .map((id) => personById.get(id))
+                .filter((p): p is (typeof people)[number] => p !== undefined)
               return (
                 <li key={item.id}>
                   <div className="card p-3 flex items-center gap-2">

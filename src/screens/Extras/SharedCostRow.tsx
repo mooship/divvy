@@ -4,7 +4,6 @@ import type { Currency, SharedCost } from '../../types'
 
 interface SharedCostRowProps {
   label: string
-  labelId: string
   value: SharedCost
   currency: Currency
   onChange: (cost: SharedCost) => void
@@ -12,11 +11,11 @@ interface SharedCostRowProps {
 
 export function SharedCostRow({
   label,
-  labelId,
   value,
   currency,
   onChange,
 }: SharedCostRowProps) {
+  const labelId = label.toLowerCase().replace(/\s+/g, '-')
   return (
     <section className="card p-4" aria-labelledby={labelId}>
       <div className="flex items-center justify-between mb-3">

@@ -30,7 +30,10 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
     })
   }
 
-  const billSubtotal = [...itemSubtotals.values()].reduce((a, b) => a + b, 0)
+  let billSubtotal = 0
+  for (const v of itemSubtotals.values()) {
+    billSubtotal += v
+  }
 
   const resolveSharedCost = (cost: Bill['tip']): number => {
     if (cost.type === 'percentage')
