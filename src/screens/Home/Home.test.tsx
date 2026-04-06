@@ -41,7 +41,7 @@ describe('Home', () => {
   })
 
   it('shows Continue button when a bill is in progress', () => {
-    useBillStore.setState({ id: 'active-bill-id' })
+    useBillStore.setState({ id: 'active-bill-id', people: [{ id: 'p1', name: 'Alice' }] })
     render(
       <MemoryRouter>
         <Home />

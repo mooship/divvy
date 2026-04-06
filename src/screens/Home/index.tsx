@@ -4,7 +4,8 @@ import { useBillStore } from '../../store'
 
 export function Home() {
   const navigate = useNavigate()
-  const billId = useBillStore((s) => s.id)
+  // Show Continue only when there's a real bill in progress (has people)
+  const hasBill = useBillStore((s) => Boolean(s.id && s.people.length > 0))
   const reset = useBillStore((s) => s.reset)
 
   const handleStart = () => {
@@ -24,7 +25,7 @@ export function Home() {
       </div>
 
       <div className="w-full max-w-sm flex flex-col gap-3">
-        {billId && (
+        {hasBill && (
           <button
             type="button"
             onClick={handleContinue}
@@ -38,12 +39,10 @@ export function Home() {
           onClick={handleStart}
           className={clsx(
             'w-full focus-ring',
-            billId ? 'btn-ghost' : 'btn-primary',
+            hasBill ? 'btn-ghost' : 'btn-primary',
           )}
         >
-          <span role="img" aria-label="receipt">
-            🧾
-          </span>{' '}
+          <span aria-hidden="true">🧾</span>{' '}
           Start a new bill
         </button>
       </div>
