@@ -28,6 +28,7 @@ export function Items() {
   const [newPrice, setNewPrice] = useState(0)
   const [assigningItemId, setAssigningItemId] = useState<string | null>(null)
   const [showOcr, setShowOcr] = useState(false)
+  const personIndexMap = new Map(people.map((p, i) => [p.id, i]))
 
   const handleAddItem = (e?: React.FormEvent) => {
     e?.preventDefault()
@@ -97,7 +98,7 @@ export function Items() {
                             <PersonChip
                               key={p.id}
                               name={p.name}
-                              index={people.findIndex((p2) => p2.id === p.id)}
+                              index={personIndexMap.get(p.id) ?? 0}
                               size="sm"
                               decorative
                             />

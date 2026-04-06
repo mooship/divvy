@@ -39,7 +39,7 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
 
   if (candidates.length === 0) {
     return (
-      <BottomSheet>
+      <BottomSheet ariaLabel="No items found">
         <h2 className="text-lg font-bold text-ink mb-2">No items found</h2>
         <p className="text-muted text-sm mb-4">
           The receipt scan didn't find any items. Try again with a clearer
@@ -60,7 +60,10 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
   }
 
   return (
-    <BottomSheet className="max-h-[90vh] flex flex-col">
+    <BottomSheet
+      className="max-h-[90vh] flex flex-col"
+      ariaLabel="Confirm items"
+    >
       <h2 className="text-lg font-bold text-ink mb-1">Confirm items</h2>
       <p className="text-sm text-muted mb-4">
         Review the scanned items. Uncheck any you don't want to add.
@@ -73,11 +76,13 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
         {candidates.map((candidate, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: OCR candidates don't reorder
           <li key={i} className="flex items-start gap-2">
+            {/* biome-ignore lint/a11y/useSemanticElements: custom-styled checkbox uses button for layout */}
             <button
               type="button"
               onClick={() => toggleCandidate(i)}
               className="mt-3 w-5 h-5 rounded border-2 border-coral flex items-center justify-center shrink-0 focus-ring"
-              aria-pressed={candidate.selected}
+              role="checkbox"
+              aria-checked={candidate.selected}
               aria-label={
                 candidate.selected
                   ? `Deselect ${candidate.name}`

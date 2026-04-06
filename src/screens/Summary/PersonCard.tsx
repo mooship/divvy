@@ -10,10 +10,18 @@ interface PersonCardProps {
 
 export function PersonCard({ total, currency, personIndex }: PersonCardProps) {
   return (
-    <div className="card p-4">
+    <section
+      className="card p-4"
+      aria-labelledby={`person-card-${personIndex}`}
+    >
       <div className="flex items-center gap-3 mb-3">
         <PersonChip name={total.name} index={personIndex} decorative />
-        <h2 className="text-lg font-bold text-ink flex-1">{total.name}</h2>
+        <h2
+          id={`person-card-${personIndex}`}
+          className="text-lg font-bold text-ink flex-1"
+        >
+          {total.name}
+        </h2>
         <span className="text-xl font-bold text-ink">
           {formatCents(total.total, currency)}
         </span>
@@ -53,6 +61,6 @@ export function PersonCard({ total, currency, personIndex }: PersonCardProps) {
           </li>
         )}
       </ul>
-    </div>
+    </section>
   )
 }
