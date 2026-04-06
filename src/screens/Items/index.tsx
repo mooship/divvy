@@ -151,6 +151,7 @@ export function Items() {
 
       {assigningItemId && (
         <AssignModal
+          key={assigningItemId}
           itemId={assigningItemId}
           onClose={() => setAssigningItemId(null)}
         />
