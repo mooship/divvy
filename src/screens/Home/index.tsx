@@ -26,11 +26,11 @@ export function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-bg flex flex-col px-4 pt-12 pb-8">
+    <div className="min-h-screen bg-bg flex flex-col px-4 pt-4 pb-8">
       <div className="flex-1 flex flex-col items-center justify-center gap-6">
         <div className="text-center">
-          <h1 className="text-5xl font-bold text-ink mb-2">Divvy</h1>
-          <p className="text-muted text-lg">Split the bill fairly.</p>
+          <h1 className="text-2xl font-bold text-ink mb-1">Split the bill fairly.</h1>
+          <p className="text-muted">Add items, assign to people, done.</p>
         </div>
 
         <div className="w-full max-w-sm flex flex-col gap-3">
