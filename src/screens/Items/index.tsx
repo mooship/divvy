@@ -4,16 +4,17 @@ import { BottomAction } from '../../components/BottomAction'
 import { CurrencyInput } from '../../components/CurrencyInput'
 import { PersonChip } from '../../components/PersonChip'
 import { formatCents } from '../../lib/calc'
-import { useBillStore } from '../../store'
+import { useBillStore, useOcrStore } from '../../store'
 
 import { AssignModal } from './AssignModal'
-
-// Placeholder — replaced in Task 15
-const OcrCapture = (_props: { onClose: () => void }) => null
+import { OcrCapture } from './OcrCapture'
+import { OcrConfirm } from './OcrConfirm'
 
 export function Items() {
   const navigate = useNavigate()
   const { items, people, currency, addItem, removeItem } = useBillStore()
+  const ocrStatus = useOcrStore((s) => s.status)
+  const clearOcr = useOcrStore((s) => s.clearOcr)
   const [newName, setNewName] = useState('')
   const [newPrice, setNewPrice] = useState(0)
   const [assigningItemId, setAssigningItemId] = useState<string | null>(null)
@@ -27,6 +28,11 @@ export function Items() {
     addItem(newName.trim(), newPrice)
     setNewName('')
     setNewPrice(0)
+  }
+
+  const handleOcrClose = () => {
+    clearOcr()
+    setShowOcr(false)
   }
 
   return (
@@ -162,7 +168,8 @@ export function Items() {
           onClose={() => setAssigningItemId(null)}
         />
       )}
-      {showOcr && <OcrCapture onClose={() => setShowOcr(false)} />}
+      {showOcr && ocrStatus !== 'done' && <OcrCapture onClose={handleOcrClose} />}
+      {showOcr && ocrStatus === 'done' && <OcrConfirm onClose={handleOcrClose} />}
 
       <BottomAction>
         <button
