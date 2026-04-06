@@ -48,7 +48,6 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            capture="environment"
             className="sr-only"
             aria-label="Take photo or upload receipt image"
             onChange={(e) => {
