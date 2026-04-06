@@ -5,12 +5,20 @@ interface PersonChipProps {
   name: string
   index: number
   size?: 'sm' | 'md'
+  /** Set to true when the chip is alongside visible text — hides it from screen readers */
+  decorative?: boolean
   className?: string
 }
 
-export function PersonChip({ name, index, size = 'md', className }: PersonChipProps) {
+export function PersonChip({
+  name,
+  index,
+  size = 'md',
+  decorative = false,
+  className,
+}: PersonChipProps) {
   const color = PERSON_COLORS[index % PERSON_COLORS.length]
-  const initials = name.slice(0, 2).toUpperCase()
+  const initials = [...name].slice(0, 2).join('').toUpperCase()
 
   return (
     <span
@@ -20,8 +28,9 @@ export function PersonChip({ name, index, size = 'md', className }: PersonChipPr
         className,
       )}
       style={{ backgroundColor: color }}
-      aria-label={name}
-      title={name}
+      aria-hidden={decorative || undefined}
+      aria-label={decorative ? undefined : name}
+      title={decorative ? undefined : name}
     >
       {initials}
     </span>

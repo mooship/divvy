@@ -21,6 +21,10 @@ export function Setup() {
   const handleAddPerson = () => {
     const trimmed = nameInput.trim()
     if (!trimmed) return
+    const isDuplicate = people.some(
+      (p) => p.name.toLowerCase() === trimmed.toLowerCase(),
+    )
+    if (isDuplicate) return
     addPerson(trimmed)
     setNameInput('')
   }
@@ -88,7 +92,7 @@ export function Setup() {
                 className="card flex items-center justify-between p-3"
               >
                 <div className="flex items-center gap-3">
-                  <PersonChip name={person.name} index={i} />
+                  <PersonChip name={person.name} index={i} decorative />
                   <span className="font-medium text-ink">{person.name}</span>
                 </div>
                 <button
