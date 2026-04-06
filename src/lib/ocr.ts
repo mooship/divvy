@@ -1,4 +1,4 @@
-import { CURRENCY_CONFIG, type Currency } from '../types'
+import { CURRENCY_CONFIG, type Currency, type OcrLanguage } from '../types'
 
 // Keywords safe to match as whole words anywhere in the name
 const KEYWORD_PATTERNS = [
@@ -207,6 +207,7 @@ export function preprocessImage(imageFile: File): Promise<string> {
 
 interface WorkerState {
   worker: import('tesseract.js').Worker
+  language: OcrLanguage
   progressCallback: ((pct: number) => void) | null
 }
 
@@ -215,11 +216,21 @@ let _workerState: WorkerState | null = null
 export async function runOcr(
   imageDataUrl: string,
   onProgress: (pct: number) => void,
+  language: OcrLanguage = 'eng',
 ): Promise<OcrLine[]> {
+  if (_workerState && _workerState.language !== language) {
+    await _workerState.worker.terminate()
+    _workerState = null
+  }
+
   if (!_workerState) {
     const { createWorker } = await import('tesseract.js')
-    const state: WorkerState = { worker: null as never, progressCallback: null }
-    state.worker = await createWorker('eng', 1, {
+    const state: WorkerState = {
+      worker: null as never,
+      language,
+      progressCallback: null,
+    }
+    state.worker = await createWorker(language, 1, {
       logger: (m) => {
         if (m.status === 'recognizing text' && state.progressCallback) {
           state.progressCallback(Math.round(10 + m.progress * 80))
