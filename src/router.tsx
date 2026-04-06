@@ -5,10 +5,7 @@ import { Extras } from './screens/Extras'
 import { Home } from './screens/Home'
 import { Items } from './screens/Items'
 import { Setup } from './screens/Setup'
-
-const Placeholder = ({ name }: { name: string }) => (
-  <div className="p-8 text-ink font-bold">{name} (coming soon)</div>
-)
+import { Summary } from './screens/Summary'
 
 export const router = createBrowserRouter([
   {
@@ -37,11 +34,11 @@ export const router = createBrowserRouter([
         path: 'summary',
         element: (
           <ProtectedRoute>
-            <Placeholder name="Summary" />
+            <Summary />
           </ProtectedRoute>
         ),
       },
-      { path: 'bill', element: <Placeholder name="Shared bill" /> },
+      { path: 'bill', element: <Summary readOnly /> },
     ],
   },
 ])
