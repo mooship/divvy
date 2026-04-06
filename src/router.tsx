@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from './App'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { Extras } from './screens/Extras'
 import { Home } from './screens/Home'
 import { Items } from './screens/Items'
 import { Setup } from './screens/Setup'
@@ -28,7 +29,7 @@ export const router = createBrowserRouter([
         path: 'extras',
         element: (
           <ProtectedRoute>
-            <Placeholder name="Extras" />
+            <Extras />
           </ProtectedRoute>
         ),
       },
