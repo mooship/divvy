@@ -9,10 +9,30 @@ export const CURRENCY_CONFIG: Record<
     thousandsSeparator: string
   }
 > = {
-  ZAR: { symbol: 'R', symbolPosition: 'prefix', decimalSeparator: '.', thousandsSeparator: ',' },
-  USD: { symbol: '$', symbolPosition: 'prefix', decimalSeparator: '.', thousandsSeparator: ',' },
-  EUR: { symbol: '€', symbolPosition: 'prefix', decimalSeparator: ',', thousandsSeparator: '.' },
-  GBP: { symbol: '£', symbolPosition: 'prefix', decimalSeparator: '.', thousandsSeparator: ',' },
+  ZAR: {
+    symbol: 'R',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+  },
+  USD: {
+    symbol: '$',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+  },
+  EUR: {
+    symbol: '€',
+    symbolPosition: 'prefix',
+    decimalSeparator: ',',
+    thousandsSeparator: '.',
+  },
+  GBP: {
+    symbol: '£',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+  },
 }
 
 export const PERSON_COLORS = [

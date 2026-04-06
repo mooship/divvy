@@ -20,11 +20,15 @@ export function Setup() {
 
   const handleAddPerson = () => {
     const trimmed = nameInput.trim()
-    if (!trimmed) return
+    if (!trimmed) {
+      return
+    }
     const isDuplicate = people.some(
       (p) => p.name.toLowerCase() === trimmed.toLowerCase(),
     )
-    if (isDuplicate) return
+    if (isDuplicate) {
+      return
+    }
     addPerson(trimmed)
     setNameInput('')
   }

@@ -21,7 +21,9 @@ export function Items() {
 
   const handleAddItem = (e?: React.FormEvent) => {
     e?.preventDefault()
-    if (!newName.trim() || newPrice <= 0) return
+    if (!newName.trim() || newPrice <= 0) {
+      return
+    }
     addItem(newName.trim(), newPrice)
     setNewName('')
     setNewPrice(0)
@@ -111,7 +113,11 @@ export function Items() {
           <h2 className="text-xs font-bold text-muted uppercase tracking-wider mb-3">
             Add item manually
           </h2>
-          <form onSubmit={handleAddItem} className="flex flex-col gap-2" noValidate>
+          <form
+            onSubmit={handleAddItem}
+            className="flex flex-col gap-2"
+            noValidate
+          >
             <div>
               <label htmlFor="item-name" className="sr-only">
                 Item name

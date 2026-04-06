@@ -6,7 +6,9 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const billId = useBillStore(s => s.id)
-  if (!billId) return <Navigate to='/' replace />
+  const billId = useBillStore((s) => s.id)
+  if (!billId) {
+    return <Navigate to="/" replace />
+  }
   return <>{children}</>
 }

@@ -6,10 +6,14 @@ export function encodeBill(bill: Bill): string {
 }
 
 export function decodeBill(encoded: string): Bill | null {
-  if (!encoded) return null
+  if (!encoded) {
+    return null
+  }
   try {
     const json = LZString.decompressFromEncodedURIComponent(encoded)
-    if (!json) return null
+    if (!json) {
+      return null
+    }
     return JSON.parse(json) as Bill
   } catch {
     return null

@@ -1,4 +1,4 @@
 export { useBillStore } from './billSlice'
-export { usePrefsStore } from './prefsSlice'
+export type { OcrCandidate, OcrStatus } from './ocrSlice'
 export { useOcrStore } from './ocrSlice'
-export type { OcrStatus, OcrCandidate } from './ocrSlice'
+export { usePrefsStore } from './prefsSlice'

@@ -27,18 +27,21 @@ export function Summary({ readOnly = false }: SummaryProps) {
     })),
   )
 
-  const bill: Bill = useMemo(() => {
+  const bill: Bill | null = useMemo(() => {
     if (readOnly) {
       const d = searchParams.get('d')
-      if (d) return decodeBill(d) ?? storeState
+      return d ? decodeBill(d) : null
     }
     return storeState
   }, [readOnly, searchParams, storeState])
 
-  const totals = useMemo(() => calculateTotals(bill), [bill])
+  const totals = useMemo(() => (bill ? calculateTotals(bill) : []), [bill])
   const grandTotal = totals.reduce((s, t) => s + t.total, 0)
 
   const handleShare = async () => {
+    if (!bill) {
+      return
+    }
     const { encodeBill } = await import('../../lib/sharing')
     const url = `${window.location.origin}/bill?d=${encodeBill(bill)}`
     try {
@@ -69,20 +72,20 @@ export function Summary({ readOnly = false }: SummaryProps) {
           {readOnly ? 'Bill summary' : 'Summary'}
         </h1>
 
-        <div className="flex flex-col gap-4" aria-live="polite">
+        <div className="flex flex-col gap-4">
           {totals.map((total) => (
             <PersonCard
               key={total.personId}
               total={total}
-              currency={bill.currency}
+              currency={bill!.currency}
             />
           ))}
         </div>
 
         <div className="card p-4 mt-4 text-center">
           <p className="text-sm text-muted mb-1">Grand total</p>
-          <p className="text-3xl font-bold text-ink">
-            {formatCents(grandTotal, bill.currency)}
+          <p className="text-3xl font-bold text-ink" aria-live="polite">
+            {formatCents(grandTotal, bill!.currency)}
           </p>
         </div>
       </div>

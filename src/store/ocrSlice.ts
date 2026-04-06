@@ -23,15 +23,15 @@ interface OcrActions {
   clearOcr: () => void
 }
 
-export const useOcrStore = create<OcrState & OcrActions>()(set => ({
+export const useOcrStore = create<OcrState & OcrActions>()((set) => ({
   status: 'idle',
   progress: 0,
   candidates: [],
-  setStatus: status => set({ status }),
-  setProgress: progress => set({ progress }),
-  setCandidates: candidates => set({ candidates }),
-  toggleCandidate: index =>
-    set(s => ({
+  setStatus: (status) => set({ status }),
+  setProgress: (progress) => set({ progress }),
+  setCandidates: (candidates) => set({ candidates }),
+  toggleCandidate: (index) =>
+    set((s) => ({
       candidates: s.candidates.map((c, i) =>
         i === index ? { ...c, selected: !c.selected } : c,
       ),

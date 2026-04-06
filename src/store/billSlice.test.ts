@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { useBillStore } from './billSlice'
 
 const EMPTY_BILL = {
@@ -26,7 +26,8 @@ describe('billStore', () => {
   })
 
   it('removePerson removes the person and clears them from item assignments', () => {
-    const { addPerson, addItem, assignItem, removePerson } = useBillStore.getState()
+    const { addPerson, addItem, assignItem, removePerson } =
+      useBillStore.getState()
     addPerson('Alice')
     addPerson('Bob')
     const { people } = useBillStore.getState()
@@ -36,7 +37,9 @@ describe('billStore', () => {
     assignItem(item.id, [alice.id, bob.id])
     removePerson(alice.id)
     const updatedItem = useBillStore.getState().items[0]
-    expect(useBillStore.getState().people.find(p => p.id === alice.id)).toBeUndefined()
+    expect(
+      useBillStore.getState().people.find((p) => p.id === alice.id),
+    ).toBeUndefined()
     expect(updatedItem.assignedTo).not.toContain(alice.id)
     expect(updatedItem.assignedTo).toContain(bob.id)
   })

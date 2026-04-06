@@ -1,4 +1,9 @@
-import { CURRENCY_CONFIG, type Bill, type Currency, type PersonTotal } from '../types'
+import {
+  type Bill,
+  CURRENCY_CONFIG,
+  type Currency,
+  type PersonTotal,
+} from '../types'
 
 export function calculateTotals(bill: Bill): PersonTotal[] {
   const { people, items, tip, serviceFee, deliveryFee } = bill
@@ -11,21 +16,26 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
   }
 
   for (const item of items) {
-    if (item.assignedTo.length === 0) continue
+    if (item.assignedTo.length === 0) {
+      continue
+    }
     const perPerson = Math.floor(item.price / item.assignedTo.length)
     const remainder = item.price - perPerson * item.assignedTo.length
 
     item.assignedTo.forEach((personId, i) => {
       const amount = perPerson + (i < remainder ? 1 : 0)
       itemSubtotals.set(personId, (itemSubtotals.get(personId) ?? 0) + amount)
-      itemBreakdowns.get(personId)?.push({ itemId: item.id, name: item.name, amount })
+      itemBreakdowns
+        .get(personId)
+        ?.push({ itemId: item.id, name: item.name, amount })
     })
   }
 
   const billSubtotal = [...itemSubtotals.values()].reduce((a, b) => a + b, 0)
 
   const resolveSharedCost = (cost: Bill['tip']): number => {
-    if (cost.type === 'percentage') return Math.round((billSubtotal * cost.value) / 100)
+    if (cost.type === 'percentage')
+      return Math.round((billSubtotal * cost.value) / 100)
     return cost.value
   }
 
@@ -34,7 +44,9 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
   const deliveryFeeTotal = resolveSharedCost(deliveryFee)
 
   const distribute = (total: number): Map<string, number> => {
-    if (total === 0) return new Map(people.map(p => [p.id, 0]))
+    if (total === 0) {
+      return new Map(people.map((p) => [p.id, 0]))
+    }
 
     if (billSubtotal === 0) {
       const even = Math.floor(total / people.length)
@@ -42,7 +54,7 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
       return new Map(people.map((p, i) => [p.id, even + (i < rem ? 1 : 0)]))
     }
 
-    const rawShares = people.map(p => {
+    const rawShares = people.map((p) => {
       const sub = itemSubtotals.get(p.id) ?? 0
       return Math.floor((total * sub) / billSubtotal)
     })
@@ -50,14 +62,16 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
     const allocated = rawShares.reduce((a, b) => a + b, 0)
     const rem = total - allocated
 
-    return new Map(people.map((p, i) => [p.id, rawShares[i] + (i < rem ? 1 : 0)]))
+    return new Map(
+      people.map((p, i) => [p.id, rawShares[i] + (i < rem ? 1 : 0)]),
+    )
   }
 
   const tipShares = distribute(tipTotal)
   const serviceFeeShares = distribute(serviceFeeTotal)
   const deliveryFeeShares = distribute(deliveryFeeTotal)
 
-  return people.map(person => {
+  return people.map((person) => {
     const itemsSubtotal = itemSubtotals.get(person.id) ?? 0
     const tipShare = tipShares.get(person.id) ?? 0
     const serviceFeeShare = serviceFeeShares.get(person.id) ?? 0

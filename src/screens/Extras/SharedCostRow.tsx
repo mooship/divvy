@@ -69,7 +69,7 @@ export function SharedCostRow({
             autoComplete="off"
             value={value.value || ''}
             onChange={(e) => {
-              const n = parseInt(e.target.value, 10)
+              const n = parseFloat(e.target.value)
               onChange({
                 type: 'percentage',
                 value: isNaN(n) ? 0 : Math.max(0, n),

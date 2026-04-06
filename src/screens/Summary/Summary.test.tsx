@@ -44,8 +44,9 @@ describe('Summary', () => {
         <Summary />
       </MemoryRouter>,
     )
-    expect(screen.getByText('$20.00')).toBeInTheDocument()
-    expect(screen.getByText('$10.00')).toBeInTheDocument()
+    // Amount appears in both the card header total and the item breakdown row
+    expect(screen.getAllByText('$20.00').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('$10.00').length).toBeGreaterThan(0)
   })
 
   it('shows the grand total', () => {

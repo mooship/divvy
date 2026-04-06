@@ -30,6 +30,7 @@ export function PersonCard({ total, currency }: PersonCardProps) {
         {total.itemBreakdown.map((item) => (
           <li key={item.itemId} className="flex justify-between text-sm">
             <span className="text-muted">{item.name}</span>
+            <span className="text-ink">{formatCents(item.amount, currency)}</span>
           </li>
         ))}
         {total.tipShare > 0 && (

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
 import clsx from 'clsx'
+import { useEffect, useState } from 'react'
 import { CURRENCY_CONFIG, type Currency } from '../types'
 
 interface CurrencyInputProps {
@@ -22,14 +22,18 @@ export function CurrencyInput({
   const config = CURRENCY_CONFIG[currency]
   const [isFocused, setIsFocused] = useState(false)
   const [localValue, setLocalValue] = useState(() =>
-    value > 0 ? (value / 100).toFixed(2).replace('.', config.decimalSeparator) : '',
+    value > 0
+      ? (value / 100).toFixed(2).replace('.', config.decimalSeparator)
+      : '',
   )
 
   // Sync when value or currency changes externally (e.g. store reset, URL load, currency switch)
   useEffect(() => {
     if (!isFocused) {
       setLocalValue(
-        value > 0 ? (value / 100).toFixed(2).replace('.', config.decimalSeparator) : '',
+        value > 0
+          ? (value / 100).toFixed(2).replace('.', config.decimalSeparator)
+          : '',
       )
     }
   }, [value, config.decimalSeparator, isFocused])
@@ -44,7 +48,9 @@ export function CurrencyInput({
     if (!isNaN(parsed) && parsed >= 0) {
       const cents = Math.round(parsed * 100)
       onChange(cents)
-      setLocalValue((cents / 100).toFixed(2).replace('.', config.decimalSeparator))
+      setLocalValue(
+        (cents / 100).toFixed(2).replace('.', config.decimalSeparator),
+      )
     } else {
       onChange(0)
       setLocalValue('')
@@ -54,17 +60,20 @@ export function CurrencyInput({
   return (
     <div className={clsx('relative flex items-center', className)}>
       {config.symbolPosition === 'prefix' && (
-        <span className='absolute left-3 text-muted select-none pointer-events-none' aria-hidden='true'>
+        <span
+          className="absolute left-3 text-muted select-none pointer-events-none"
+          aria-hidden="true"
+        >
           {config.symbol}
         </span>
       )}
       <input
         id={id}
-        type='text'
-        inputMode='decimal'
-        autoComplete='off'
+        type="text"
+        inputMode="decimal"
+        autoComplete="off"
         value={localValue}
-        onChange={e => setLocalValue(e.target.value)}
+        onChange={(e) => setLocalValue(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={handleBlur}
         placeholder={placeholder ?? `0${config.decimalSeparator}00`}
@@ -74,7 +83,10 @@ export function CurrencyInput({
         )}
       />
       {config.symbolPosition === 'suffix' && (
-        <span className='absolute right-3 text-muted select-none pointer-events-none' aria-hidden='true'>
+        <span
+          className="absolute right-3 text-muted select-none pointer-events-none"
+          aria-hidden="true"
+        >
           {config.symbol}
         </span>
       )}

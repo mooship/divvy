@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest'
-import { encodeBill, decodeBill } from './sharing'
+import { describe, expect, it } from 'vitest'
 import type { Bill } from '../types'
+import { decodeBill, encodeBill } from './sharing'
 
 const bill: Bill = {
   id: 'test-1',

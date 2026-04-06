@@ -12,9 +12,9 @@ interface PrefsActions {
 
 export const usePrefsStore = create<PrefsState & PrefsActions>()(
   persist(
-    set => ({
+    (set) => ({
       defaultCurrency: 'ZAR' as Currency,
-      setDefaultCurrency: currency => set({ defaultCurrency: currency }),
+      setDefaultCurrency: (currency) => set({ defaultCurrency: currency }),
     }),
     { name: 'divvy-prefs' },
   ),

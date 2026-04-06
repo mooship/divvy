@@ -42,8 +42,7 @@ export function Home() {
             hasBill ? 'btn-ghost' : 'btn-primary',
           )}
         >
-          <span aria-hidden="true">🧾</span>{' '}
-          Start a new bill
+          <span aria-hidden="true">🧾</span> Start a new bill
         </button>
       </div>
     </div>
