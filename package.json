@@ -1,0 +1,48 @@
+{
+  "name": "divvy",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "check": "biome check --write ."
+  },
+  "dependencies": {
+    "@fontsource-variable/nunito": "^5.2.7",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-visually-hidden": "^1.2.4",
+    "@unocss/preset-wind4": "^66.6.7",
+    "clsx": "^2.1.1",
+    "lz-string": "^1.5.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.14.0",
+    "tesseract.js": "^7.0.0",
+    "unocss": "^66.6.7",
+    "vite-plugin-pwa": "^1.2.0",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@biomejs/biome": "^2.4.10",
+    "@rolldown/plugin-babel": "^0.2.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/babel__core": "^7.20.5",
+    "@types/node": "^24.12.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/ui": "^4.1.2",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "jsdom": "^29.0.1",
+    "typescript": "~5.9.3",
+    "vite": "^8.0.1",
+    "vitest": "^4.1.2"
+  }
+}
