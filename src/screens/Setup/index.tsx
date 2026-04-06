@@ -50,10 +50,7 @@ export function Setup() {
         <h1 className="text-2xl font-bold text-ink mb-6">Set up the bill</h1>
 
         <section className="mb-8" aria-labelledby="currency-label">
-          <h2
-            id="currency-label"
-            className="text-xs font-bold text-muted uppercase tracking-wider mb-3"
-          >
+          <h2 id="currency-label" className="section-label mb-3">
             Currency
           </h2>
           <fieldset
@@ -81,10 +78,7 @@ export function Setup() {
         </section>
 
         <section aria-labelledby="people-label">
-          <h2
-            id="people-label"
-            className="text-xs font-bold text-muted uppercase tracking-wider mb-3"
-          >
+          <h2 id="people-label" className="section-label mb-3">
             Who's at the table?
           </h2>
 

@@ -2,7 +2,8 @@ import { useRef } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { BottomSheet } from '../../components/BottomSheet'
 import { parseReceiptLines, preprocessImage, runOcr } from '../../lib/ocr'
-import { useBillStore, useOcrStore } from '../../store'
+import { useBillStore, useOcrStore, usePrefsStore } from '../../store'
+import { OCR_LANGUAGES, type OcrLanguage } from '../../types'
 
 interface OcrCaptureProps {
   onClose: () => void
@@ -22,6 +23,8 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
       })),
     )
   const currency = useBillStore((s) => s.currency)
+  const ocrLanguage = usePrefsStore((s) => s.ocrLanguage)
+  const setOcrLanguage = usePrefsStore((s) => s.setOcrLanguage)
 
   const handleFile = async (file: File) => {
     try {
@@ -31,7 +34,7 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
       const processedDataUrl = await preprocessImage(file)
       setProgress(10)
 
-      const ocrLines = await runOcr(processedDataUrl, setProgress)
+      const ocrLines = await runOcr(processedDataUrl, setProgress, ocrLanguage)
       setProgress(95)
 
       const parsed = parseReceiptLines(ocrLines, currency)
@@ -53,6 +56,23 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
       {status === 'idle' && (
         <>
           <h2 className="text-lg font-bold text-ink mb-4">Scan receipt</h2>
+          <div className="mb-4">
+            <label htmlFor="ocr-language" className="section-label block mb-1">
+              Receipt language
+            </label>
+            <select
+              id="ocr-language"
+              value={ocrLanguage}
+              onChange={(e) => setOcrLanguage(e.target.value as OcrLanguage)}
+              className="input-text focus-ring w-full"
+            >
+              {(Object.keys(OCR_LANGUAGES) as OcrLanguage[]).map((code) => (
+                <option key={code} value={code}>
+                  {OCR_LANGUAGES[code]}
+                </option>
+              ))}
+            </select>
+          </div>
           <input
             ref={fileInputRef}
             type="file"

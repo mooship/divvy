@@ -133,9 +133,7 @@ export function Items() {
         )}
 
         <div className="card p-4">
-          <h2 className="text-xs font-bold text-muted uppercase tracking-wider mb-3">
-            Add item manually
-          </h2>
+          <h2 className="section-label mb-3">Add item manually</h2>
           <form
             onSubmit={handleAddItem}
             className="flex flex-col gap-2"

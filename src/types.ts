@@ -1,4 +1,25 @@
-export type Currency = 'ZAR' | 'USD' | 'EUR' | 'GBP'
+export type Currency = 'ZAR' | 'USD' | 'EUR' | 'GBP' | 'CHF'
+
+export type OcrLanguage =
+  | 'afr'
+  | 'eng'
+  | 'fra'
+  | 'deu'
+  | 'spa'
+  | 'ita'
+  | 'por'
+  | 'nld'
+
+export const OCR_LANGUAGES: Record<OcrLanguage, string> = {
+  afr: 'Afrikaans',
+  eng: 'English',
+  fra: 'Français',
+  deu: 'Deutsch',
+  spa: 'Español',
+  ita: 'Italiano',
+  por: 'Português',
+  nld: 'Nederlands',
+}
 
 export const CURRENCY_CONFIG: Record<
   Currency,
@@ -32,6 +53,12 @@ export const CURRENCY_CONFIG: Record<
     symbolPosition: 'prefix',
     decimalSeparator: '.',
     thousandsSeparator: ',',
+  },
+  CHF: {
+    symbol: 'CHF',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: "'",
   },
 }
 

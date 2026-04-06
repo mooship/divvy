@@ -134,4 +134,8 @@ describe('formatCents', () => {
   it('formats EUR with comma decimal', () => {
     expect(formatCents(1250, 'EUR')).toBe('€12,50')
   })
+
+  it('formats CHF with prefix symbol', () => {
+    expect(formatCents(1850, 'CHF')).toBe('CHF18.50')
+  })
 })
