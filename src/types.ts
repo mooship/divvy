@@ -1,8 +1,17 @@
 export type Currency = 'ZAR' | 'USD' | 'EUR' | 'GBP' | 'CHF'
 
-export type OcrLanguage = 'eng' | 'fra' | 'deu' | 'spa' | 'ita' | 'por' | 'nld'
+export type OcrLanguage =
+  | 'afr'
+  | 'eng'
+  | 'fra'
+  | 'deu'
+  | 'spa'
+  | 'ita'
+  | 'por'
+  | 'nld'
 
 export const OCR_LANGUAGES: Record<OcrLanguage, string> = {
+  afr: 'Afrikaans',
   eng: 'English',
   fra: 'Français',
   deu: 'Deutsch',
