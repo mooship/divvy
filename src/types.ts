@@ -103,11 +103,11 @@ export interface Bill {
 export interface PersonTotal {
   personId: string
   name: string
-  itemsSubtotal: number // cents
-  tipShare: number // cents
-  serviceFeeShare: number // cents
-  deliveryFeeShare: number // cents
-  total: number // cents
+  itemsSubtotal: number // all numeric fields below are cents
+  tipShare: number
+  serviceFeeShare: number
+  deliveryFeeShare: number
+  total: number
   itemBreakdown: Array<{ itemId: string; name: string; amount: number }>
 }
 
