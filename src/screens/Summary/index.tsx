@@ -54,7 +54,7 @@ export function Summary({ readOnly = false }: SummaryProps) {
     }
   }
 
-  if (totals.length === 0) {
+  if (!bill || totals.length === 0) {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center px-4">
         <p className="text-muted text-center">
@@ -76,7 +76,7 @@ export function Summary({ readOnly = false }: SummaryProps) {
             <PersonCard
               key={total.personId}
               total={total}
-              currency={bill?.currency ?? 'USD'}
+              currency={bill.currency}
               personIndex={i}
             />
           ))}
@@ -85,7 +85,7 @@ export function Summary({ readOnly = false }: SummaryProps) {
         <div className="card p-4 mt-4 text-center">
           <p className="text-sm text-muted mb-1">Grand total</p>
           <p className="text-3xl font-bold text-ink" aria-live="polite">
-            {formatCents(grandTotal, bill?.currency ?? 'USD')}
+            {formatCents(grandTotal, bill.currency)}
           </p>
         </div>
       </div>

@@ -134,6 +134,7 @@ export function preprocessImage(imageFile: File): Promise<string> {
       canvas.height = height
       const ctx = canvas.getContext('2d')
       if (!ctx) {
+        URL.revokeObjectURL(url)
         reject(new Error('Failed to get 2d canvas context'))
         return
       }

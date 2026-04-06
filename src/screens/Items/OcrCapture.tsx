@@ -1,7 +1,12 @@
 import { useRef } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { BottomSheet } from '../../components/BottomSheet'
-import { parseReceiptLines, preprocessImage, runOcr } from '../../lib/ocr'
+import {
+  parseReceiptLines,
+  preprocessImage,
+  runOcr,
+  terminateOcr,
+} from '../../lib/ocr'
 import { useBillStore, useOcrStore, usePrefsStore } from '../../store'
 import { OCR_LANGUAGES, type OcrLanguage } from '../../types'
 
@@ -11,6 +16,7 @@ interface OcrCaptureProps {
 
 export function OcrCapture({ onClose }: OcrCaptureProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const cancelledRef = useRef(false)
   const { status, progress, setStatus, setProgress, setCandidates, clearOcr } =
     useOcrStore(
       useShallow((s) => ({
@@ -27,6 +33,7 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
   const setOcrLanguage = usePrefsStore((s) => s.setOcrLanguage)
 
   const handleFile = async (file: File) => {
+    cancelledRef.current = false
     try {
       setStatus('processing')
       setProgress(5)
@@ -39,16 +46,25 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
 
       const parsed = parseReceiptLines(ocrLines, currency)
 
-      setCandidates(parsed.map((p) => ({ ...p, selected: true })))
-      setStatus('done')
-      setProgress(100)
+      if (!cancelledRef.current) {
+        setCandidates(parsed.map((p) => ({ ...p, selected: true })))
+        setStatus('done')
+        setProgress(100)
+      }
     } catch {
-      setStatus('error')
+      if (!cancelledRef.current) {
+        setStatus('error')
+      }
     }
   }
 
-  if (status === 'done') {
-    return null
+  const handleCancel = async () => {
+    cancelledRef.current = true
+    if (status === 'processing') {
+      await terminateOcr()
+    }
+    clearOcr()
+    onClose()
   }
 
   return (
@@ -95,7 +111,7 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
           </button>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleCancel}
             className="btn-ghost w-full focus-ring"
           >
             Cancel
@@ -122,6 +138,13 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
             />
           </div>
           <p className="text-sm text-muted text-center mt-2">{progress}%</p>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="btn-ghost w-full mt-4 focus-ring"
+          >
+            Cancel
+          </button>
         </div>
       )}
 
@@ -142,10 +165,7 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
           </button>
           <button
             type="button"
-            onClick={() => {
-              clearOcr()
-              onClose()
-            }}
+            onClick={handleCancel}
             className="btn-ghost w-full focus-ring"
           >
             Cancel

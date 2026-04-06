@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { useBillStore } from './billSlice'
+import { getRecentBills, useBillStore } from './billSlice'
 
 const EMPTY_BILL = {
   id: '',
@@ -74,5 +74,29 @@ describe('billStore', () => {
     const state = useBillStore.getState()
     expect(state.people).toHaveLength(0)
     expect(state.id).toBeTruthy()
+  })
+})
+
+describe('getRecentBills', () => {
+  it('returns empty array when localStorage is empty', () => {
+    expect(getRecentBills()).toEqual([])
+  })
+
+  it('returns empty array when localStorage contains corrupt JSON', () => {
+    localStorage.setItem('divvy-recent-bills', 'not-valid-json{{{{')
+    expect(getRecentBills()).toEqual([])
+  })
+
+  it('saves a summary with encoded field on reset', () => {
+    useBillStore.getState().addPerson('Alice')
+    useBillStore.getState().addPerson('Bob')
+    useBillStore.getState().addItem('Pizza', 2000)
+    useBillStore.setState({ id: 'test-bill-id' })
+    useBillStore.getState().reset()
+    const recent = getRecentBills()
+    expect(recent).toHaveLength(1)
+    expect(recent[0].id).toBe('test-bill-id')
+    expect(typeof recent[0].encoded).toBe('string')
+    expect(recent[0].encoded?.length).toBeGreaterThan(0)
   })
 })

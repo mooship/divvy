@@ -44,10 +44,13 @@ export function AssignModal({ itemId, onClose }: AssignModalProps) {
     onClose()
   }
 
-  const assignedNames = people
+  const assignedNameList = people
     .filter((p) => selected.has(p.id))
     .map((p) => p.name)
-    .join(' and ')
+  const assignedNames =
+    assignedNameList.length <= 1
+      ? (assignedNameList[0] ?? '')
+      : `${assignedNameList.slice(0, -1).join(', ')} and ${assignedNameList.at(-1)}`
 
   return (
     <Dialog.Root open onOpenChange={(open) => !open && onClose()}>

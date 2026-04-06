@@ -94,7 +94,11 @@ export function CurrencyInput({
         placeholder={placeholder ?? `0${config.decimalSeparator}00`}
         className={clsx(
           'input-text focus-ring',
-          config.symbolPosition === 'prefix' ? 'pl-8' : 'pr-8',
+          config.symbolPosition === 'prefix'
+            ? config.symbol.length > 1
+              ? 'pl-12'
+              : 'pl-8'
+            : 'pr-8',
         )}
       />
       {config.symbolPosition === 'suffix' && (

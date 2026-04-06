@@ -87,7 +87,7 @@ export interface Item {
 
 export interface SharedCost {
   type: 'percentage' | 'fixed'
-  value: number // percentage as integer (e.g. 15) or fixed in cents
+  value: number // percentage value (e.g. 15 for 15%, decimals allowed) or fixed in cents
 }
 
 export interface Bill {
@@ -117,4 +117,5 @@ export interface BillSummary {
   peopleCount: number
   total: number // cents
   currency: Currency
+  encoded?: string // LZ-encoded bill for read-only sharing; absent on legacy entries
 }

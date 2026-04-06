@@ -120,6 +120,48 @@ describe('calculateTotals', () => {
     const grand = totals.reduce((s, t) => s + t.total, 0)
     expect(grand).toBe(5500)
   })
+
+  it('distributes tip remainder by largest fractional part, not position', () => {
+    // Alice: 2¢, Bob: 1¢ subtotals → Alice's exact tip share has larger fraction
+    // distributing a 10¢ tip: Alice = floor(10*2/3)=6 + 1 remainder = 7, Bob = 3
+    const bill = makeBill({
+      items: [
+        { id: 'i1', name: 'A', price: 2, assignedTo: ['alice'] },
+        { id: 'i2', name: 'B', price: 1, assignedTo: ['bob'] },
+      ],
+      tip: { type: 'fixed', value: 10 },
+    })
+    const totals = calculateTotals(bill)
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
+    const alice = totals.find((t) => t.personId === 'alice')!
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
+    const bob = totals.find((t) => t.personId === 'bob')!
+    // exact: alice = 10*2/3 = 6.667, bob = 10*1/3 = 3.333
+    // floors: alice=6, bob=3 → allocated=9, rem=1
+    // alice has larger frac (0.667 > 0.333) → alice gets the extra cent
+    expect(alice.tipShare).toBe(7)
+    expect(bob.tipShare).toBe(3)
+    expect(alice.tipShare + bob.tipShare).toBe(10)
+  })
+
+  it('ignores assignedTo entries that reference non-existent people', () => {
+    const bill = makeBill({
+      items: [
+        {
+          id: 'i1',
+          name: 'Pizza',
+          price: 1000,
+          assignedTo: ['alice', 'ghost'],
+        },
+      ],
+    })
+    const totals = calculateTotals(bill)
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
+    const alice = totals.find((t) => t.personId === 'alice')!
+    // 'ghost' is not in people, but still in assignedTo so price is split 2 ways
+    expect(alice.itemsSubtotal).toBe(500)
+    expect(alice.total).toBe(500)
+  })
 })
 
 describe('formatCents', () => {

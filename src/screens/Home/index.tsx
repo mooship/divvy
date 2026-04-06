@@ -63,24 +63,40 @@ export function Home() {
             Recent bills
           </h2>
           <ul className="flex flex-col gap-2">
-            {recentBills.map((bill) => (
-              <li
-                key={bill.id}
-                className="card p-3 flex justify-between items-center"
-              >
-                <div>
-                  <p className="font-medium text-ink">
-                    {bill.peopleCount} people
-                  </p>
-                  <p className="text-xs text-muted">
-                    {new Date(bill.date).toLocaleDateString()}
-                  </p>
-                </div>
-                <span className="font-bold text-ink">
-                  {formatCents(bill.total, bill.currency)}
-                </span>
-              </li>
-            ))}
+            {recentBills.map((bill) => {
+              const inner = (
+                <>
+                  <div>
+                    <p className="font-medium text-ink">
+                      {bill.peopleCount} people
+                    </p>
+                    <p className="text-xs text-muted">
+                      {new Date(bill.date).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <span className="font-bold text-ink">
+                    {formatCents(bill.total, bill.currency)}
+                  </span>
+                </>
+              )
+              return (
+                <li key={bill.id}>
+                  {bill.encoded ? (
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/bill?d=${bill.encoded}`)}
+                      className="card p-3 w-full flex justify-between items-center focus-ring text-left"
+                    >
+                      {inner}
+                    </button>
+                  ) : (
+                    <div className="card p-3 flex justify-between items-center">
+                      {inner}
+                    </div>
+                  )}
+                </li>
+              )
+            })}
           </ul>
         </section>
       )}
