@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import App from './App'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Home } from './screens/Home'
+import { Items } from './screens/Items'
 import { Setup } from './screens/Setup'
 
 const Placeholder = ({ name }: { name: string }) => (
@@ -19,7 +20,7 @@ export const router = createBrowserRouter([
         path: 'items',
         element: (
           <ProtectedRoute>
-            <Placeholder name="Items" />
+            <Items />
           </ProtectedRoute>
         ),
       },
