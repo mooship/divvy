@@ -1,8 +1,21 @@
-import { defineConfig } from 'unocss'
 import presetWind4 from '@unocss/preset-wind4'
+import { defineConfig } from 'unocss'
 
 export default defineConfig({
   presets: [presetWind4()],
+  preflights: [
+    {
+      getCSS: () => `
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+      `,
+    },
+  ],
   theme: {
     colors: {
       bg: '#FFF8F0',
