@@ -5,9 +5,9 @@ export default function App() {
   return (
     <div className="min-h-screen bg-bg font-sans text-ink">
       <AppHeader />
-      <div className="mx-auto w-full max-w-md pt-14">
+      <main className="mx-auto w-full max-w-md pt-14">
         <Outlet />
-      </div>
+      </main>
     </div>
   )
 }

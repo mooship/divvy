@@ -40,7 +40,7 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
   }
 
   return (
-    <BottomSheet>
+    <BottomSheet ariaLabel="Scan receipt">
       {status === 'idle' && (
         <>
           <h2 className="text-lg font-bold text-ink mb-4">Scan receipt</h2>
