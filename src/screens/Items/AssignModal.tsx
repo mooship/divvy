@@ -1,5 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import clsx from 'clsx'
+import { Check } from 'lucide-react'
 import { useState } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { PersonChip } from '../../components/PersonChip'
@@ -95,9 +96,10 @@ export function AssignModal({ itemId, onClose }: AssignModalProps) {
                         {person.name}
                       </span>
                       {isSelected && (
-                        <span className="ml-auto" aria-hidden="true">
-                          ✅
-                        </span>
+                        <Check
+                          className="ml-auto w-4 h-4 text-teal"
+                          aria-hidden="true"
+                        />
                       )}
                     </button>
                   </li>

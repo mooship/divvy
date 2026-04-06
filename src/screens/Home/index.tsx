@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { Receipt } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { formatCents } from '../../lib/calc'
@@ -52,7 +53,7 @@ export function Home() {
               hasBill ? 'btn-ghost' : 'btn-primary',
             )}
           >
-            <span aria-hidden="true">🧾</span> Start a new bill
+            <Receipt className="w-4 h-4" aria-hidden="true" /> Start a new bill
           </button>
         </div>
       </div>

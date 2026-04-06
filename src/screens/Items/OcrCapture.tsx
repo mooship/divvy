@@ -1,3 +1,4 @@
+import { Camera, Receipt, XCircle } from 'lucide-react'
 import { useRef } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { BottomSheet } from '../../components/BottomSheet'
@@ -107,7 +108,8 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
             onClick={() => fileInputRef.current?.click()}
             className="btn-primary w-full mb-3 focus-ring"
           >
-            <span aria-hidden="true">📷</span> Take photo / Upload
+            <Camera className="w-4 h-4" aria-hidden="true" /> Take photo /
+            Upload
           </button>
           <button
             type="button"
@@ -121,8 +123,9 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
 
       {status === 'processing' && (
         <div aria-live="polite" role="status">
-          <p className="text-center font-bold text-ink mb-4">
-            Reading your receipt... <span aria-hidden="true">🧾</span>
+          <p className="text-center font-bold text-ink mb-4 flex items-center justify-center gap-2">
+            <Receipt className="w-4 h-4" aria-hidden="true" />
+            Reading your receipt...
           </p>
           <div
             className="w-full bg-surface rounded-full h-3"
@@ -150,8 +153,9 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
 
       {status === 'error' && (
         <div>
-          <p className="text-danger font-bold mb-2">
-            <span aria-hidden="true">❌</span> Could not read the receipt.
+          <p className="text-danger font-bold mb-2 flex items-center gap-2">
+            <XCircle className="w-4 h-4" aria-hidden="true" /> Could not read
+            the receipt.
           </p>
           <p className="text-sm text-muted mb-4">
             Try again with better lighting or a clearer photo.

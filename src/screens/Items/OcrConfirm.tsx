@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react'
 import { useShallow } from 'zustand/shallow'
 import { BottomSheet } from '../../components/BottomSheet'
 import { CurrencyInput } from '../../components/CurrencyInput'
@@ -90,9 +91,7 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
               }
             >
               {candidate.selected && (
-                <span aria-hidden="true" className="text-xs text-coral">
-                  ✓
-                </span>
+                <Check className="w-3 h-3 text-coral" aria-hidden="true" />
               )}
             </button>
             <div className="flex-1 flex gap-2">

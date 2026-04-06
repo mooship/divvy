@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { Plus, Trash2, Users } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useShallow } from 'zustand/shallow'
@@ -83,9 +84,12 @@ export function Setup() {
           </h2>
 
           {people.length < 2 && (
-            <p className="text-sm text-muted mb-4" aria-live="polite">
-              <span aria-hidden="true">👥</span> Add at least 2 people to
-              continue
+            <p
+              className="text-sm text-muted mb-4 flex items-center gap-2"
+              aria-live="polite"
+            >
+              <Users className="w-4 h-4 shrink-0" aria-hidden="true" />
+              Add at least 2 people to continue
             </p>
           )}
 
@@ -105,10 +109,10 @@ export function Setup() {
                 <button
                   type="button"
                   onClick={() => removePerson(person.id)}
-                  className="text-muted hover:text-danger transition-colors p-2 focus-ring rounded-lg"
+                  className="text-muted hover:text-danger transition-colors p-2 focus-ring rounded-lg flex items-center justify-center"
                   aria-label={`Remove ${person.name}`}
                 >
-                  <span aria-hidden="true">🗑️</span>
+                  <Trash2 className="w-5 h-5" aria-hidden="true" />
                 </button>
               </li>
             ))}
@@ -138,7 +142,7 @@ export function Setup() {
               className="btn-primary focus-ring px-4 min-w-12"
               aria-label="Add person"
             >
-              <span aria-hidden="true">➕</span>
+              <Plus className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
         </section>

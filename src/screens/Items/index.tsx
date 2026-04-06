@@ -1,3 +1,4 @@
+import { Camera, Pizza, Plus, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useShallow } from 'zustand/shallow'
@@ -62,9 +63,7 @@ export function Items() {
           onClick={() => setShowOcr(true)}
           className="w-full card p-4 flex items-center gap-3 text-left mb-6 focus-ring"
         >
-          <span aria-hidden="true" className="text-2xl">
-            📷
-          </span>
+          <Camera className="w-6 h-6 text-ink shrink-0" aria-hidden="true" />
           <div>
             <div className="font-bold text-ink">Scan receipt</div>
             <div className="text-sm text-muted">
@@ -74,9 +73,9 @@ export function Items() {
         </button>
 
         {items.length === 0 ? (
-          <p className="text-center text-muted py-8">
-            <span aria-hidden="true">🍕</span> No items yet — scan a receipt or
-            add one!
+          <p className="text-center text-muted py-8 flex items-center justify-center gap-2">
+            <Pizza className="w-4 h-4" aria-hidden="true" />
+            No items yet — scan a receipt or add one!
           </p>
         ) : (
           <ul className="flex flex-col gap-2 mb-4" aria-label="Bill items">
@@ -120,10 +119,10 @@ export function Items() {
                     <button
                       type="button"
                       onClick={() => removeItem(item.id)}
-                      className="p-2 min-w-11 min-h-11 text-muted hover:text-danger transition-colors focus-ring rounded-lg shrink-0"
+                      className="p-2 min-w-11 min-h-11 text-muted hover:text-danger transition-colors focus-ring rounded-lg shrink-0 flex items-center justify-center"
                       aria-label={`Delete ${item.name}`}
                     >
-                      <span aria-hidden="true">🗑️</span>
+                      <Trash2 className="w-5 h-5" aria-hidden="true" />
                     </button>
                   </div>
                 </li>
@@ -170,7 +169,7 @@ export function Items() {
               disabled={!newName.trim() || newPrice <= 0}
               className="btn-primary w-full focus-ring"
             >
-              <span aria-hidden="true">➕</span> Add item
+              <Plus className="w-4 h-4" aria-hidden="true" /> Add item
             </button>
           </form>
         </div>
