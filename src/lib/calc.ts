@@ -16,13 +16,12 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
   }
 
   for (const item of items) {
-    if (item.assignedTo.length === 0) {
-      continue
-    }
-    const perPerson = Math.floor(item.price / item.assignedTo.length)
-    const remainder = item.price - perPerson * item.assignedTo.length
+    const assignees =
+      item.assignedTo.length > 0 ? item.assignedTo : people.map((p) => p.id)
+    const perPerson = Math.floor(item.price / assignees.length)
+    const remainder = item.price - perPerson * assignees.length
 
-    item.assignedTo.forEach((personId, i) => {
+    assignees.forEach((personId, i) => {
       const amount = perPerson + (i < remainder ? 1 : 0)
       itemSubtotals.set(personId, (itemSubtotals.get(personId) ?? 0) + amount)
       itemBreakdowns

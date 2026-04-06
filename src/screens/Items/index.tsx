@@ -94,8 +94,8 @@ export function Items() {
                             />
                           ))
                         ) : (
-                          <span className="text-xs text-danger font-medium">
-                            Unassigned
+                          <span className="text-xs text-muted font-medium">
+                            Everyone
                           </span>
                         )}
                       </div>
