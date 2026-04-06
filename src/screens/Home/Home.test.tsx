@@ -26,7 +26,9 @@ describe('Home', () => {
         <Home />
       </MemoryRouter>,
     )
-    expect(screen.getByRole('heading', { name: /split the bill fairly/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: /split the bill fairly/i }),
+    ).toBeInTheDocument()
   })
 
   it('shows Start a new bill button', () => {
