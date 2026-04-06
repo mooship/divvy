@@ -83,7 +83,7 @@ export function Items() {
             {items.map((item) => {
               const assigned = item.assignedTo
                 .map((id) => personById.get(id))
-                .filter(Boolean)
+                .filter((p): p is (typeof people)[number] => p !== undefined)
               return (
                 <li key={item.id}>
                   <div className="card p-3 flex items-center gap-2">
