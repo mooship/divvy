@@ -1,9 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from './App'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { Home } from './screens/Home'
 
 const Placeholder = ({ name }: { name: string }) => (
-  <div className='p-8 text-ink font-bold'>{name} (coming soon)</div>
+  <div className="p-8 text-ink font-bold">{name} (coming soon)</div>
 )
 
 export const router = createBrowserRouter([
@@ -11,13 +12,13 @@ export const router = createBrowserRouter([
     path: '/',
     element: <App />,
     children: [
-      { index: true, element: <Placeholder name='Home' /> },
-      { path: 'setup', element: <Placeholder name='Setup' /> },
+      { index: true, element: <Home /> },
+      { path: 'setup', element: <Placeholder name="Setup" /> },
       {
         path: 'items',
         element: (
           <ProtectedRoute>
-            <Placeholder name='Items' />
+            <Placeholder name="Items" />
           </ProtectedRoute>
         ),
       },
@@ -25,7 +26,7 @@ export const router = createBrowserRouter([
         path: 'extras',
         element: (
           <ProtectedRoute>
-            <Placeholder name='Extras' />
+            <Placeholder name="Extras" />
           </ProtectedRoute>
         ),
       },
@@ -33,11 +34,11 @@ export const router = createBrowserRouter([
         path: 'summary',
         element: (
           <ProtectedRoute>
-            <Placeholder name='Summary' />
+            <Placeholder name="Summary" />
           </ProtectedRoute>
         ),
       },
-      { path: 'bill', element: <Placeholder name='Shared bill' /> },
+      { path: 'bill', element: <Placeholder name="Shared bill" /> },
     ],
   },
 ])
