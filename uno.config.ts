@@ -31,14 +31,14 @@ export default defineConfig({
     },
   },
   shortcuts: {
-    card: 'bg-surface rounded-xl shadow-[0_2px_8px_rgba(45,32,22,0.08)]',
+    card: 'bg-surface rounded-2xl shadow-[0_2px_16px_rgba(255,107,107,0.10)]',
     'btn-primary':
-      'flex items-center justify-center gap-2 bg-coral text-white rounded-lg font-bold h-12 px-6 transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed',
+      'flex items-center justify-center gap-2 bg-gradient-to-b from-[#FF9090] to-coral text-white rounded-2xl font-bold h-12 px-6 transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed',
     'btn-ghost':
-      'flex items-center justify-center gap-2 bg-transparent text-ink rounded-lg font-medium h-12 px-4 transition-transform active:scale-95',
+      'flex items-center justify-center gap-2 bg-transparent text-ink rounded-2xl font-medium h-12 px-4 transition-transform active:scale-95',
     'input-text':
-      'bg-white border-2 border-surface rounded-lg px-4 h-12 text-ink text-base w-full',
-    'section-label': 'text-xs font-bold text-muted uppercase tracking-wider',
+      'bg-white border-2 border-surface rounded-xl px-4 h-12 text-ink text-base w-full',
+    'section-label': 'text-xs font-bold text-muted',
     'focus-ring':
       'focus-visible:outline-3 focus-visible:outline-coral focus-visible:outline-offset-2',
   },
