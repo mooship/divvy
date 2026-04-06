@@ -64,8 +64,8 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
     let rem = total - floors.reduce((a, b) => a + b, 0)
 
     // Largest-remainder: give extra cents to those with the highest fractional parts
-    const order = exact
-      .map((e, i) => ({ i, frac: e - Math.floor(e) }))
+    const order = floors
+      .map((floor, i) => ({ i, frac: exact[i] - floor }))
       .sort((a, b) => b.frac - a.frac || a.i - b.i)
 
     const result = [...floors]
