@@ -18,6 +18,7 @@ dist/
 # Claude Code
 .claude/
 MEMORY.md
+docs/superpowers/
 
 # Editor
 .DS_Store
