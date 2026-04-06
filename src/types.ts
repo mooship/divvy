@@ -1,4 +1,4 @@
-export type Currency = 'ZAR' | 'USD' | 'EUR' | 'GBP'
+export type Currency = 'ZAR' | 'USD' | 'EUR' | 'GBP' | 'CHF'
 
 export type OcrLanguage = 'eng' | 'fra' | 'deu' | 'spa' | 'ita' | 'por' | 'nld'
 
@@ -44,6 +44,12 @@ export const CURRENCY_CONFIG: Record<
     symbolPosition: 'prefix',
     decimalSeparator: '.',
     thousandsSeparator: ',',
+  },
+  CHF: {
+    symbol: 'CHF',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: "'",
   },
 }
 

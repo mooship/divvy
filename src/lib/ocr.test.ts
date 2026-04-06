@@ -175,6 +175,24 @@ describe('parseReceiptLines', () => {
       expect(items).toHaveLength(1)
       expect(items[0].price).toBe(250000)
     })
+
+    it('handles CHF apostrophe thousands separator', () => {
+      const items = parseReceiptLines(
+        toLines(["Wagyu Steak    CHF 1'234.56"]),
+        'CHF',
+      )
+      expect(items).toHaveLength(1)
+      expect(items[0].price).toBe(123456)
+    })
+  })
+
+  describe('CHF currency', () => {
+    it('parses CHF price with symbol', () => {
+      const items = parseReceiptLines(toLines(['Rösti    CHF 18.50']), 'CHF')
+      expect(items).toHaveLength(1)
+      expect(items[0].name).toBe('Rösti')
+      expect(items[0].price).toBe(1850)
+    })
   })
 
   describe('GBP currency', () => {
