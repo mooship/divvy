@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Bill, Currency, Item, SharedCost } from '../types'
+import { calculateTotals } from '../lib/calc'
+import type { Bill, BillSummary, Currency, Item, SharedCost } from '../types'
 
 interface BillActions {
   addPerson: (name: string) => void
@@ -19,6 +20,36 @@ interface BillActions {
   setCurrency: (currency: Currency) => void
   loadBill: (bill: Bill) => void
   reset: () => void
+}
+
+const RECENT_BILLS_KEY = 'divvy-recent-bills'
+const MAX_RECENT = 5
+
+function saveToRecent(bill: Bill): void {
+  if (!bill.id || bill.items.length === 0) {
+    return
+  }
+  const totals = calculateTotals(bill)
+  const grandTotal = totals.reduce((s, t) => s + t.total, 0)
+  const summary: BillSummary = {
+    id: bill.id,
+    date: new Date().toISOString(),
+    peopleCount: bill.people.length,
+    total: grandTotal,
+    currency: bill.currency,
+  }
+  const existing: BillSummary[] = JSON.parse(
+    localStorage.getItem(RECENT_BILLS_KEY) ?? '[]',
+  )
+  const updated = [summary, ...existing.filter((b) => b.id !== bill.id)].slice(
+    0,
+    MAX_RECENT,
+  )
+  localStorage.setItem(RECENT_BILLS_KEY, JSON.stringify(updated))
+}
+
+export function getRecentBills(): BillSummary[] {
+  return JSON.parse(localStorage.getItem(RECENT_BILLS_KEY) ?? '[]')
 }
 
 const DEFAULT_BILL: Bill = {
@@ -71,7 +102,11 @@ export const useBillStore = create<Bill & BillActions>()(
       setSharedCost: (key, cost) => set({ [key]: cost }),
       setCurrency: (currency) => set({ currency }),
       loadBill: (bill) => set(bill),
-      reset: () => set({ ...DEFAULT_BILL, id: crypto.randomUUID() }),
+      reset: () =>
+        set((state) => {
+          saveToRecent(state)
+          return { ...DEFAULT_BILL, id: crypto.randomUUID() }
+        }),
     }),
     { name: 'divvy-bill' },
   ),
