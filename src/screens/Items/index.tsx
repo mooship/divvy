@@ -6,6 +6,7 @@ import { BottomAction } from '../../components/BottomAction'
 import { CurrencyInput } from '../../components/CurrencyInput'
 import { PersonChip } from '../../components/PersonChip'
 import { formatCents } from '../../lib/calc'
+import { isValidItem } from '../../lib/validation'
 import { useBillStore, useOcrStore } from '../../store'
 
 import { AssignModal } from './AssignModal'
@@ -29,18 +30,17 @@ export function Items() {
   const [newPrice, setNewPrice] = useState(0)
   const [assigningItemId, setAssigningItemId] = useState<string | null>(null)
   const [showOcr, setShowOcr] = useState(false)
-  const personById = useMemo(
-    () => new Map(people.map((p) => [p.id, p])),
-    [people],
-  )
-  const personIndexMap = useMemo(
-    () => new Map(people.map((p, i) => [p.id, i])),
+  const { personById, personIndexMap } = useMemo(
+    () => ({
+      personById: new Map(people.map((p) => [p.id, p])),
+      personIndexMap: new Map(people.map((p, i) => [p.id, i])),
+    }),
     [people],
   )
 
   const handleAddItem = (e?: React.FormEvent) => {
     e?.preventDefault()
-    if (!newName.trim() || newPrice <= 0) {
+    if (!isValidItem(newName, newPrice)) {
       return
     }
     addItem(newName.trim(), newPrice)
@@ -166,7 +166,7 @@ export function Items() {
             </div>
             <button
               type="submit"
-              disabled={!newName.trim() || newPrice <= 0}
+              disabled={!isValidItem(newName, newPrice)}
               className="btn-primary w-full focus-ring"
             >
               <Plus className="w-4 h-4" aria-hidden="true" /> Add item

@@ -1,4 +1,4 @@
-import { CURRENCY_CONFIG, type Currency, type OcrLanguage } from '../types'
+import { CURRENCY_CONFIG, type Currency } from '../types'
 
 // Keywords safe to match as whole words anywhere in the name
 const KEYWORD_PATTERNS = [
@@ -204,70 +204,4 @@ export function preprocessImage(imageFile: File): Promise<string> {
 
     img.src = url
   })
-}
-
-interface WorkerState {
-  worker: import('tesseract.js').Worker
-  language: OcrLanguage
-  progressCallback: ((pct: number) => void) | null
-}
-
-let _workerState: WorkerState | null = null
-
-export async function runOcr(
-  imageDataUrl: string,
-  onProgress: (pct: number) => void,
-  language: OcrLanguage = 'eng',
-): Promise<OcrLine[]> {
-  if (_workerState && _workerState.language !== language) {
-    await _workerState.worker.reinitialize(language)
-    _workerState.language = language
-  }
-
-  if (!_workerState) {
-    const { createWorker } = await import('tesseract.js')
-    const state: WorkerState = {
-      worker: null as never,
-      language,
-      progressCallback: null,
-    }
-    state.worker = await createWorker(language, 1, {
-      logger: (m) => {
-        if (m.status === 'recognizing text' && state.progressCallback) {
-          state.progressCallback(Math.round(10 + m.progress * 80))
-        }
-      },
-    })
-    _workerState = state
-  }
-
-  _workerState.progressCallback = onProgress
-  const result = await _workerState.worker.recognize(imageDataUrl)
-  _workerState.progressCallback = null
-
-  const lines: OcrLine[] = []
-  for (const block of result.data.blocks ?? []) {
-    for (const paragraph of block.paragraphs) {
-      for (const line of paragraph.lines) {
-        lines.push({
-          text: line.text.trim(),
-          confidence:
-            line.words.length > 0
-              ? Math.round(
-                  line.words.reduce((sum, w) => sum + w.confidence, 0) /
-                    line.words.length,
-                )
-              : 0,
-        })
-      }
-    }
-  }
-  return lines
-}
-
-export async function terminateOcr(): Promise<void> {
-  if (_workerState) {
-    await _workerState.worker.terminate()
-    _workerState = null
-  }
 }

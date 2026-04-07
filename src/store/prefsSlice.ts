@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { STORAGE_KEYS } from '../lib/storageKeys'
 import type { Currency, OcrLanguage } from '../types'
 
 interface PrefsState {
@@ -20,6 +21,6 @@ export const usePrefsStore = create<PrefsState & PrefsActions>()(
       setDefaultCurrency: (currency) => set({ defaultCurrency: currency }),
       setOcrLanguage: (language) => set({ ocrLanguage: language }),
     }),
-    { name: 'divvy-prefs' },
+    { name: STORAGE_KEYS.PREFS },
   ),
 )
