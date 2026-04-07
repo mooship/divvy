@@ -1,8 +1,10 @@
-import { Receipt, Share2 } from 'lucide-react'
-import { useMemo } from 'react'
+import { Check, Receipt, Share2 } from 'lucide-react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useShallow } from 'zustand/shallow'
 import { BottomAction } from '../../components/BottomAction'
+import { ConfirmDialog } from '../../components/ConfirmDialog'
+import { PageLayout } from '../../components/PageLayout'
 import { calculateTotals, formatCents } from '../../lib/calc'
 import { decodeBill, encodeBill } from '../../lib/sharing'
 import { useBillStore } from '../../store'
@@ -16,6 +18,10 @@ interface SummaryProps {
 export function Summary({ readOnly = false }: SummaryProps) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const [copied, setCopied] = useState(false)
+  const [showNewBillConfirm, setShowNewBillConfirm] = useState(false)
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(null)
+  const reset = useBillStore((s) => s.reset)
   const storeState = useBillStore(
     useShallow((s) => ({
       id: s.id,
@@ -39,7 +45,7 @@ export function Summary({ readOnly = false }: SummaryProps) {
   const totals = useMemo(() => (bill ? calculateTotals(bill) : []), [bill])
   const grandTotal = totals.reduce((s, t) => s + t.total, 0)
 
-  const handleShare = async () => {
+  const handleShare = useCallback(async () => {
     if (!bill) {
       return
     }
@@ -49,69 +55,107 @@ export function Summary({ readOnly = false }: SummaryProps) {
         await navigator.share({ title: 'Divvy bill', url })
       } else {
         await navigator.clipboard.writeText(url)
+        if (copiedTimerRef.current) {
+          clearTimeout(copiedTimerRef.current)
+        }
+        setCopied(true)
+        copiedTimerRef.current = setTimeout(() => setCopied(false), 2000)
       }
     } catch {
       // User cancelled share or clipboard not available
     }
+  }, [bill])
+
+  const handleNewBill = () => {
+    setShowNewBillConfirm(true)
+  }
+
+  const handleConfirmNewBill = () => {
+    setShowNewBillConfirm(false)
+    reset()
+    navigate('/')
   }
 
   if (!bill || totals.length === 0) {
     return (
-      <div className="min-h-screen bg-bg flex items-center justify-center px-4">
-        <p className="text-muted text-center flex items-center gap-2">
-          <Receipt className="w-4 h-4" aria-hidden="true" /> No bill data found.
-        </p>
-      </div>
+      <PageLayout>
+        <div className="min-h-screen bg-bg flex items-center justify-center px-4">
+          <p className="text-muted text-center flex items-center gap-2">
+            <Receipt className="w-4 h-4" aria-hidden="true" /> No bill data
+            found.
+          </p>
+        </div>
+      </PageLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-bg pb-32">
-      <div className="px-4 pt-8">
-        <h1 className="text-2xl font-bold text-ink mb-6">
-          {readOnly ? 'Bill summary' : 'Summary'}
-        </h1>
+    <PageLayout
+      backTo={readOnly ? undefined : '/extras'}
+      step={readOnly ? undefined : 4}
+    >
+      <div className="min-h-screen bg-bg pb-32">
+        <div className="px-4 pt-8">
+          <h1 className="text-2xl font-bold text-ink mb-6">
+            {readOnly ? 'Bill summary' : 'Summary'}
+          </h1>
 
-        <div className="flex flex-col gap-4">
-          {totals.map((total, i) => (
-            <PersonCard
-              key={total.personId}
-              total={total}
-              currency={bill.currency}
-              personIndex={i}
-            />
-          ))}
+          <div className="flex flex-col gap-4">
+            {totals.map((total, i) => (
+              <PersonCard
+                key={total.personId}
+                total={total}
+                currency={bill.currency}
+                personIndex={i}
+              />
+            ))}
+          </div>
+
+          <div className="card p-4 mt-4 text-center">
+            <p className="text-sm text-muted mb-1">Grand total</p>
+            <p className="text-3xl font-bold text-ink" aria-live="polite">
+              {formatCents(grandTotal, bill.currency)}
+            </p>
+          </div>
         </div>
 
-        <div className="card p-4 mt-4 text-center">
-          <p className="text-sm text-muted mb-1">Grand total</p>
-          <p className="text-3xl font-bold text-ink" aria-live="polite">
-            {formatCents(grandTotal, bill.currency)}
-          </p>
-        </div>
-      </div>
+        <ConfirmDialog
+          open={showNewBillConfirm}
+          title="Start a new bill?"
+          description="Your current bill will be saved to recent bills."
+          confirmLabel="Start new"
+          onConfirm={handleConfirmNewBill}
+          onCancel={() => setShowNewBillConfirm(false)}
+        />
 
-      <BottomAction>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={handleShare}
-            className="btn-primary flex-1 focus-ring"
-            aria-label="Share bill"
-          >
-            <Share2 className="w-4 h-4" aria-hidden="true" /> Share
-          </button>
-          {!readOnly && (
+        <BottomAction>
+          {copied && (
+            <p className="text-sm text-teal font-medium text-center mb-2 flex items-center justify-center gap-1">
+              <Check className="w-4 h-4" aria-hidden="true" /> Link copied to
+              clipboard
+            </p>
+          )}
+          <div className="flex gap-2">
             <button
               type="button"
-              onClick={() => navigate('/')}
-              className="btn-ghost focus-ring"
+              onClick={handleShare}
+              className="btn-primary flex-1 focus-ring"
+              aria-label="Share bill"
             >
-              New bill
+              <Share2 className="w-4 h-4" aria-hidden="true" /> Share
             </button>
-          )}
-        </div>
-      </BottomAction>
-    </div>
+            {!readOnly && (
+              <button
+                type="button"
+                onClick={handleNewBill}
+                className="btn-ghost focus-ring"
+              >
+                New bill
+              </button>
+            )}
+          </div>
+        </BottomAction>
+      </div>
+    </PageLayout>
   )
 }
