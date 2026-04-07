@@ -41,7 +41,10 @@ export function Home() {
 
   return (
     <PageLayout>
-      <div className="min-h-screen bg-bg flex flex-col px-4 pt-4 pb-8">
+      <div
+        className="min-h-screen bg-bg flex flex-col px-4 pt-4"
+        style={{ paddingBottom: 'max(2rem, calc(env(safe-area-inset-bottom, 0px) + 1rem))' }}
+      >
         <div className="flex-1 flex flex-col items-center justify-center gap-6">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-ink mb-1">
