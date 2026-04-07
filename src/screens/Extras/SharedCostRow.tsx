@@ -30,7 +30,7 @@ export function SharedCostRow({
             type="button"
             onClick={() => onChange({ type: 'percentage', value: 0 })}
             className={clsx(
-              'px-3 py-1 text-sm font-bold focus-ring',
+              'min-h-11 px-4 text-sm font-bold focus-ring',
               value.type === 'percentage'
                 ? 'bg-coral text-white'
                 : 'bg-white text-ink',
@@ -43,7 +43,7 @@ export function SharedCostRow({
             type="button"
             onClick={() => onChange({ type: 'fixed', value: 0 })}
             className={clsx(
-              'px-3 py-1 text-sm font-bold focus-ring',
+              'min-h-11 px-4 text-sm font-bold focus-ring',
               value.type === 'fixed'
                 ? 'bg-coral text-white'
                 : 'bg-white text-ink',

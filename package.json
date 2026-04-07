@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@fontsource-variable/nunito": "^5.2.7",
+    "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-visually-hidden": "^1.2.4",
     "@unocss/preset-wind4": "^66.6.7",

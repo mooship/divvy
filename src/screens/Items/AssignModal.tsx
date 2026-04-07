@@ -56,9 +56,9 @@ export function AssignModal({ itemId, onClose }: AssignModalProps) {
   return (
     <Dialog.Root open onOpenChange={(open) => !open && onClose()}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-ink/40 z-40" />
+        <Dialog.Overlay className="fixed inset-0 bg-ink/40 z-40 animate-fade-in" />
         <Dialog.Content
-          className="fixed bottom-0 left-0 right-0 bg-bg rounded-t-2xl p-6 max-h-[80vh] overflow-y-auto z-50"
+          className="fixed bottom-0 left-0 right-0 bg-bg rounded-t-2xl p-6 max-h-[80vh] overflow-y-auto z-50 animate-slide-up"
           style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}
         >
           <Dialog.Title className="text-lg font-bold text-ink mb-1">

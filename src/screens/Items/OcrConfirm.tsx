@@ -87,7 +87,7 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
             <button
               type="button"
               onClick={() => toggleCandidate(i)}
-              className="mt-3 w-5 h-5 rounded border-2 border-coral flex items-center justify-center shrink-0 focus-ring"
+              className="mt-1 min-w-11 min-h-11 flex items-center justify-center shrink-0 focus-ring rounded-lg"
               role="checkbox"
               aria-checked={candidate.selected}
               aria-label={
@@ -96,9 +96,11 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
                   : `Select ${candidate.name}`
               }
             >
-              {candidate.selected && (
-                <Check className="w-3 h-3 text-coral" aria-hidden="true" />
-              )}
+              <span className="w-5 h-5 rounded border-2 border-coral flex items-center justify-center">
+                {candidate.selected && (
+                  <Check className="w-3 h-3 text-coral" aria-hidden="true" />
+                )}
+              </span>
             </button>
             <div className="flex-1 flex gap-2">
               <div className="flex-1">
