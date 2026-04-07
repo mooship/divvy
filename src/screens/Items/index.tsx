@@ -30,13 +30,13 @@ export function Items() {
   const clearOcr = useOcrStore((s) => s.clearOcr)
   const [newName, setNewName] = useState('')
   const [newPrice, setNewPrice] = useState(0)
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' })
-  }, [])
   const [assigningItemId, setAssigningItemId] = useState<string | null>(null)
   const [deletingItemId, setDeletingItemId] = useState<string | null>(null)
   const [showOcr, setShowOcr] = useState(false)
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [])
   const { personById, personIndexMap } = useMemo(
     () => ({
       personById: new Map(people.map((p) => [p.id, p])),
