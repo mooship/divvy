@@ -1,5 +1,5 @@
 import { Camera, Pizza, Plus, Trash2 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useShallow } from 'zustand/shallow'
 import { BottomAction } from '../../components/BottomAction'
@@ -30,6 +30,10 @@ export function Items() {
   const clearOcr = useOcrStore((s) => s.clearOcr)
   const [newName, setNewName] = useState('')
   const [newPrice, setNewPrice] = useState(0)
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [])
   const [assigningItemId, setAssigningItemId] = useState<string | null>(null)
   const [deletingItemId, setDeletingItemId] = useState<string | null>(null)
   const [showOcr, setShowOcr] = useState(false)
