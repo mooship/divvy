@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { calculateTotals } from '../lib/calc'
 import { encodeBill } from '../lib/sharing'
+import { STORAGE_KEYS } from '../lib/storageKeys'
 import type { Bill, BillSummary, Currency, Item, SharedCost } from '../types'
 
 interface BillActions {
@@ -22,7 +23,7 @@ interface BillActions {
   reset: () => void
 }
 
-const RECENT_BILLS_KEY = 'divvy-recent-bills'
+const RECENT_BILLS_KEY = STORAGE_KEYS.RECENT_BILLS
 const MAX_RECENT = 5
 
 function saveToRecent(bill: Bill): void {
@@ -116,6 +117,6 @@ export const useBillStore = create<Bill & BillActions>()(
           return { ...DEFAULT_BILL, id: crypto.randomUUID() }
         }),
     }),
-    { name: 'divvy-bill' },
+    { name: STORAGE_KEYS.BILL },
   ),
 )

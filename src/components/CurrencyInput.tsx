@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { useEffect, useMemo, useState } from 'react'
-import { centsToDecimal } from '../lib/calc'
+import { centsToDecimal, parseCents } from '../lib/calc'
 import { CURRENCY_CONFIG, type Currency } from '../types'
 
 interface CurrencyInputProps {
@@ -10,19 +10,6 @@ interface CurrencyInputProps {
   id?: string
   className?: string
   placeholder?: string
-}
-
-function parseCents(
-  raw: string,
-  thousandsRe: RegExp,
-  decSep: string,
-): number | null {
-  const normalised = raw.replace(thousandsRe, '').replace(decSep, '.')
-  const parsed = parseFloat(normalised)
-  if (!Number.isNaN(parsed) && parsed >= 0) {
-    return Math.round(parsed * 100)
-  }
-  return null
 }
 
 export function CurrencyInput({

@@ -2,12 +2,8 @@ import { Camera, Receipt, XCircle } from 'lucide-react'
 import { useRef } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { BottomSheet } from '../../components/BottomSheet'
-import {
-  parseReceiptLines,
-  preprocessImage,
-  runOcr,
-  terminateOcr,
-} from '../../lib/ocr'
+import { useOcrWorker } from '../../hooks/useOcrWorker'
+import { parseReceiptLines, preprocessImage } from '../../lib/ocr'
 import { useBillStore, useOcrStore, usePrefsStore } from '../../store'
 import { OCR_LANGUAGES, type OcrLanguage } from '../../types'
 
@@ -18,6 +14,7 @@ interface OcrCaptureProps {
 export function OcrCapture({ onClose }: OcrCaptureProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const cancelledRef = useRef(false)
+  const { runOcr, terminateOcr } = useOcrWorker()
   const { status, progress, setStatus, setProgress, setCandidates, clearOcr } =
     useOcrStore(
       useShallow((s) => ({

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useShallow } from 'zustand/shallow'
 import { BottomAction } from '../../components/BottomAction'
 import { PersonChip } from '../../components/PersonChip'
+import { isDuplicateName } from '../../lib/validation'
 import { useBillStore, usePrefsStore } from '../../store'
 import { CURRENCY_CONFIG, type Currency } from '../../types'
 
@@ -33,10 +34,7 @@ export function Setup() {
     if (!trimmed) {
       return
     }
-    const isDuplicate = people.some(
-      (p) => p.name.toLowerCase() === trimmed.toLowerCase(),
-    )
-    if (isDuplicate) {
+    if (isDuplicateName(trimmed, people)) {
       return
     }
     addPerson(trimmed)

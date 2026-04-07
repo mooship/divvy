@@ -109,6 +109,19 @@ export function centsToDecimal(
   return (cents / 100).toFixed(2).replace('.', decimalSeparator)
 }
 
+export function parseCents(
+  raw: string,
+  thousandsRe: RegExp,
+  decSep: string,
+): number | null {
+  const normalised = raw.replace(thousandsRe, '').replace(decSep, '.')
+  const parsed = parseFloat(normalised)
+  if (!Number.isNaN(parsed) && parsed >= 0) {
+    return Math.round(parsed * 100)
+  }
+  return null
+}
+
 export function formatCents(cents: number, currency: Currency): string {
   const config = CURRENCY_CONFIG[currency]
   const amount = centsToDecimal(cents, config.decimalSeparator)
