@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { Receipt } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ConfirmDialog } from '../../components/ConfirmDialog'
 import { PageLayout } from '../../components/PageLayout'
 import { formatCents } from '../../lib/calc'
@@ -133,6 +133,15 @@ export function Home() {
           onConfirm={handleConfirmNewBill}
           onCancel={() => setShowNewBillConfirm(false)}
         />
+
+        <footer className="mt-6 text-center">
+          <Link
+            to="/privacy"
+            className="text-xs text-muted hover:text-ink focus-ring rounded"
+          >
+            Privacy Policy
+          </Link>
+        </footer>
       </div>
     </PageLayout>
   )
