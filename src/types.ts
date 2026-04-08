@@ -1,4 +1,29 @@
-export type Currency = 'ZAR' | 'USD' | 'EUR' | 'GBP' | 'CHF'
+export type Currency =
+  | 'AED'
+  | 'AUD'
+  | 'BRL'
+  | 'CAD'
+  | 'CHF'
+  | 'CNY'
+  | 'DKK'
+  | 'EUR'
+  | 'GBP'
+  | 'HKD'
+  | 'ILS'
+  | 'INR'
+  | 'JPY'
+  | 'KRW'
+  | 'MXN'
+  | 'MYR'
+  | 'NOK'
+  | 'NZD'
+  | 'PLN'
+  | 'SEK'
+  | 'SGD'
+  | 'THB'
+  | 'TRY'
+  | 'USD'
+  | 'ZAR'
 
 export type OcrLanguage =
   | 'afr'
@@ -21,46 +46,225 @@ export const OCR_LANGUAGES: Record<OcrLanguage, string> = {
   nld: 'Nederlands',
 }
 
-export const CURRENCY_CONFIG: Record<
-  Currency,
-  {
-    symbol: string
-    symbolPosition: 'prefix' | 'suffix'
-    decimalSeparator: string
-    thousandsSeparator: string
-  }
-> = {
-  ZAR: {
-    symbol: 'R',
+export interface CurrencyConfig {
+  name: string
+  symbol: string
+  symbolPosition: 'prefix' | 'suffix'
+  decimalSeparator: string
+  thousandsSeparator: string
+  decimals: number
+}
+
+export const CURRENCY_CONFIG: Record<Currency, CurrencyConfig> = {
+  AED: {
+    name: 'UAE Dirham',
+    symbol: 'AED',
     symbolPosition: 'prefix',
     decimalSeparator: '.',
     thousandsSeparator: ',',
+    decimals: 2,
   },
-  USD: {
-    symbol: '$',
+  AUD: {
+    name: 'Australian Dollar',
+    symbol: 'A$',
     symbolPosition: 'prefix',
     decimalSeparator: '.',
     thousandsSeparator: ',',
+    decimals: 2,
   },
-  EUR: {
-    symbol: '€',
+  BRL: {
+    name: 'Brazilian Real',
+    symbol: 'R$',
     symbolPosition: 'prefix',
     decimalSeparator: ',',
     thousandsSeparator: '.',
+    decimals: 2,
   },
-  GBP: {
-    symbol: '£',
+  CAD: {
+    name: 'Canadian Dollar',
+    symbol: 'CA$',
     symbolPosition: 'prefix',
     decimalSeparator: '.',
     thousandsSeparator: ',',
+    decimals: 2,
   },
   CHF: {
+    name: 'Swiss Franc',
     symbol: 'CHF',
     symbolPosition: 'prefix',
     decimalSeparator: '.',
     thousandsSeparator: "'",
+    decimals: 2,
+  },
+  CNY: {
+    name: 'Chinese Yuan',
+    symbol: '¥',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 2,
+  },
+  DKK: {
+    name: 'Danish Krone',
+    symbol: 'kr',
+    symbolPosition: 'suffix',
+    decimalSeparator: ',',
+    thousandsSeparator: '.',
+    decimals: 2,
+  },
+  EUR: {
+    name: 'Euro',
+    symbol: '€',
+    symbolPosition: 'prefix',
+    decimalSeparator: ',',
+    thousandsSeparator: '.',
+    decimals: 2,
+  },
+  GBP: {
+    name: 'British Pound',
+    symbol: '£',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 2,
+  },
+  HKD: {
+    name: 'Hong Kong Dollar',
+    symbol: 'HK$',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 2,
+  },
+  ILS: {
+    name: 'Israeli Shekel',
+    symbol: '₪',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 2,
+  },
+  INR: {
+    name: 'Indian Rupee',
+    symbol: '₹',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 2,
+  },
+  JPY: {
+    name: 'Japanese Yen',
+    symbol: '¥',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 0,
+  },
+  KRW: {
+    name: 'South Korean Won',
+    symbol: '₩',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 0,
+  },
+  MXN: {
+    name: 'Mexican Peso',
+    symbol: 'MX$',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 2,
+  },
+  MYR: {
+    name: 'Malaysian Ringgit',
+    symbol: 'RM',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 2,
+  },
+  NOK: {
+    name: 'Norwegian Krone',
+    symbol: 'kr',
+    symbolPosition: 'suffix',
+    decimalSeparator: ',',
+    thousandsSeparator: '.',
+    decimals: 2,
+  },
+  NZD: {
+    name: 'New Zealand Dollar',
+    symbol: 'NZ$',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 2,
+  },
+  PLN: {
+    name: 'Polish Zloty',
+    symbol: 'zł',
+    symbolPosition: 'suffix',
+    decimalSeparator: ',',
+    thousandsSeparator: '.',
+    decimals: 2,
+  },
+  SEK: {
+    name: 'Swedish Krona',
+    symbol: 'kr',
+    symbolPosition: 'suffix',
+    decimalSeparator: ',',
+    thousandsSeparator: '.',
+    decimals: 2,
+  },
+  SGD: {
+    name: 'Singapore Dollar',
+    symbol: 'S$',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 2,
+  },
+  THB: {
+    name: 'Thai Baht',
+    symbol: '฿',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 2,
+  },
+  TRY: {
+    name: 'Turkish Lira',
+    symbol: '₺',
+    symbolPosition: 'prefix',
+    decimalSeparator: ',',
+    thousandsSeparator: '.',
+    decimals: 2,
+  },
+  USD: {
+    name: 'US Dollar',
+    symbol: '$',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 2,
+  },
+  ZAR: {
+    name: 'South African Rand',
+    symbol: 'R',
+    symbolPosition: 'prefix',
+    decimalSeparator: '.',
+    thousandsSeparator: ',',
+    decimals: 2,
   },
 }
+
+export const POPULAR_CURRENCIES: Currency[] = [
+  'USD',
+  'EUR',
+  'GBP',
+  'ZAR',
+  'CHF',
+]
 
 export const PERSON_COLORS = [
   '#FFCBA4', // peach

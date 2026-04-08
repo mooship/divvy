@@ -3,7 +3,11 @@ import { useRef } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { BottomSheet } from '../../components/BottomSheet'
 import { useOcrWorker } from '../../hooks/useOcrWorker'
-import { parseReceiptLines, preprocessImage } from '../../lib/ocr'
+import {
+  detectCurrency,
+  parseReceiptLines,
+  preprocessImage,
+} from '../../lib/ocr'
 import { useBillStore, useOcrStore, usePrefsStore } from '../../store'
 import { OCR_LANGUAGES, type OcrLanguage } from '../../types'
 
@@ -15,14 +19,14 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const cancelledRef = useRef(false)
   const { runOcr, terminateOcr } = useOcrWorker()
-  const { status, progress, setStatus, setProgress, setCandidates, clearOcr } =
+  const { status, progress, setStatus, setProgress, finishOcr, clearOcr } =
     useOcrStore(
       useShallow((s) => ({
         status: s.status,
         progress: s.progress,
         setStatus: s.setStatus,
         setProgress: s.setProgress,
-        setCandidates: s.setCandidates,
+        finishOcr: s.finishOcr,
         clearOcr: s.clearOcr,
       })),
     )
@@ -45,9 +49,12 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
       const parsed = parseReceiptLines(ocrLines, currency)
 
       if (!cancelledRef.current) {
-        setCandidates(parsed.map((p) => ({ ...p, selected: true })))
-        setStatus('done')
-        setProgress(100)
+        const detected = detectCurrency(ocrLines)
+        finishOcr({
+          rawLines: ocrLines,
+          candidates: parsed.map((p) => ({ ...p, selected: true })),
+          detectedCurrency: detected && detected !== currency ? detected : null,
+        })
       }
     } catch {
       if (!cancelledRef.current) {

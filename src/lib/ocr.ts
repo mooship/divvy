@@ -1,4 +1,4 @@
-import { CURRENCY_CONFIG, type Currency } from '../types'
+import { CURRENCY_CONFIG, type Currency, type CurrencyConfig } from '../types'
 import { parseCents } from './calc'
 
 // Keywords safe to match as whole words anywhere in the name
@@ -52,6 +52,32 @@ export interface ParsedItem {
   confidence: number
 }
 
+const priceRegexCache = new Map<Currency, RegExp>()
+
+function getPriceRegex(currency: Currency, config: CurrencyConfig): RegExp {
+  const cached = priceRegexCache.get(currency)
+  if (cached) {
+    return cached
+  }
+
+  const thou =
+    config.thousandsSeparator === '.' ? '\\.' : config.thousandsSeparator
+  const sym = config.symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+  let regex: RegExp
+  if (config.decimals === 0) {
+    regex = new RegExp(`(?:${sym}\\s*)?(\\d{1,3}(?:${thou}\\d{3})*|\\d+)\\s*$`)
+  } else {
+    const dec = config.decimalSeparator === '.' ? '\\.' : ','
+    regex = new RegExp(
+      `(?:${sym}\\s*)?(\\d{1,3}(?:${thou}\\d{3})*${dec}\\d{1,3})\\s*$`,
+    )
+  }
+
+  priceRegexCache.set(currency, regex)
+  return regex
+}
+
 export function parseReceiptLines(
   lines: OcrLine[],
   currency: Currency = 'ZAR',
@@ -59,13 +85,7 @@ export function parseReceiptLines(
   const config = CURRENCY_CONFIG[currency]
   const results: ParsedItem[] = []
 
-  const dec = config.decimalSeparator === '.' ? '\\.' : ','
-  const thou =
-    config.thousandsSeparator === '.' ? '\\.' : config.thousandsSeparator
-  const sym = config.symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const priceRegex = new RegExp(
-    `(?:${sym}\\s*)?(\\d{1,3}(?:${thou}\\d{3})*${dec}\\d{1,3})\\s*$`,
-  )
+  const priceRegex = getPriceRegex(currency, config)
   const thousandsRe = new RegExp(
     config.thousandsSeparator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
     'g',
@@ -82,7 +102,12 @@ export function parseReceiptLines(
       continue
     }
 
-    const price = parseCents(match[1], thousandsRe, config.decimalSeparator)
+    const price = parseCents(
+      match[1],
+      thousandsRe,
+      config.decimalSeparator,
+      config.decimals,
+    )
     if (price === null || price <= 0) {
       continue
     }
@@ -111,6 +136,49 @@ export function parseReceiptLines(
   }
 
   return results
+}
+
+// Pairs of [escaped symbol, currency code], sorted longest-first so "R$"
+// matches before "R" and "HK$" matches before "$".
+const SYMBOL_CANDIDATES: Array<[string, Currency]> = (() => {
+  const pairs: Array<[string, Currency]> = []
+  for (const [code, config] of Object.entries(CURRENCY_CONFIG)) {
+    pairs.push([config.symbol, code as Currency])
+  }
+  pairs.sort((a, b) => b[0].length - a[0].length)
+  return pairs
+})()
+
+export function detectCurrency(lines: OcrLine[]): Currency | null {
+  const counts = new Map<Currency, number>()
+
+  for (const line of lines) {
+    const text = line.text.trim()
+    if (!text) {
+      continue
+    }
+    // For each line, find the first (longest) matching symbol
+    for (const [sym, code] of SYMBOL_CANDIDATES) {
+      if (text.includes(sym)) {
+        counts.set(code, (counts.get(code) ?? 0) + 1)
+        break
+      }
+    }
+  }
+
+  if (counts.size === 0) {
+    return null
+  }
+
+  let best: Currency | null = null
+  let bestCount = 0
+  for (const [code, count] of counts) {
+    if (count > bestCount) {
+      bestCount = count
+      best = code
+    }
+  }
+  return best
 }
 
 export function preprocessImage(imageFile: File): Promise<string> {

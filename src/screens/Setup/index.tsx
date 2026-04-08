@@ -1,15 +1,16 @@
 import clsx from 'clsx'
-import { Plus, Trash2, Users } from 'lucide-react'
-import { useState } from 'react'
+import { ChevronDown, Plus, Trash2, Users } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useShallow } from 'zustand/shallow'
 import { BottomAction } from '../../components/BottomAction'
 import { ConfirmDialog } from '../../components/ConfirmDialog'
+import { CurrencyPicker } from '../../components/CurrencyPicker'
 import { PageLayout } from '../../components/PageLayout'
 import { PersonChip } from '../../components/PersonChip'
 import { isDuplicateName } from '../../lib/validation'
 import { useBillStore, usePrefsStore } from '../../store'
-import { CURRENCY_CONFIG, type Currency } from '../../types'
+import { CURRENCY_CONFIG, type Currency, POPULAR_CURRENCIES } from '../../types'
 
 export function Setup() {
   const navigate = useNavigate()
@@ -26,6 +27,13 @@ export function Setup() {
   const setDefaultCurrency = usePrefsStore((s) => s.setDefaultCurrency)
   const [nameInput, setNameInput] = useState('')
   const [removingPersonId, setRemovingPersonId] = useState<string | null>(null)
+  const [showCurrencyPicker, setShowCurrencyPicker] = useState(false)
+
+  const quickCurrencies = useMemo(() => {
+    const set = new Set(POPULAR_CURRENCIES)
+    set.add(currency)
+    return [...set].slice(0, 6)
+  }, [currency])
 
   const handleCurrencyChange = (c: Currency) => {
     setCurrency(c)
@@ -62,7 +70,7 @@ export function Setup() {
               className="flex gap-2 flex-wrap border-0 p-0 m-0"
               aria-labelledby="currency-label"
             >
-              {(Object.keys(CURRENCY_CONFIG) as Currency[]).map((c) => (
+              {quickCurrencies.map((c) => (
                 <button
                   key={c}
                   type="button"
@@ -78,6 +86,14 @@ export function Setup() {
                   {CURRENCY_CONFIG[c].symbol} {c}
                 </button>
               ))}
+              <button
+                type="button"
+                onClick={() => setShowCurrencyPicker(true)}
+                className="px-4 h-10 rounded-lg font-medium transition-colors focus-ring bg-surface text-ink flex items-center gap-1"
+              >
+                More
+                <ChevronDown className="w-4 h-4" aria-hidden="true" />
+              </button>
             </fieldset>
           </section>
 
@@ -150,6 +166,14 @@ export function Setup() {
             </div>
           </section>
         </div>
+
+        {showCurrencyPicker && (
+          <CurrencyPicker
+            selected={currency}
+            onSelect={handleCurrencyChange}
+            onClose={() => setShowCurrencyPicker(false)}
+          />
+        )}
 
         <ConfirmDialog
           open={removingPersonId !== null}
