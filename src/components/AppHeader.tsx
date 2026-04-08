@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { ChevronLeft } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -44,7 +45,10 @@ export function AppHeader({ backTo, step, totalSteps = 4 }: AppHeaderProps) {
             <div
               // biome-ignore lint/suspicious/noArrayIndexKey: static step indicators never reorder
               key={i}
-              className={`h-1 flex-1 rounded-full ${i < step ? 'bg-coral' : 'bg-surface'}`}
+              className={clsx(
+                'h-1 flex-1 rounded-full',
+                i < step ? 'bg-coral' : 'bg-surface',
+              )}
             />
           ))}
         </nav>

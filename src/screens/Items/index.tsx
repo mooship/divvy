@@ -194,12 +194,12 @@ export function Items() {
             onClose={() => setAssigningItemId(null)}
           />
         )}
-        {showOcr && ocrStatus !== 'done' && (
-          <OcrCapture onClose={handleOcrClose} />
-        )}
-        {showOcr && ocrStatus === 'done' && (
-          <OcrConfirm onClose={handleOcrClose} />
-        )}
+        {showOcr &&
+          (ocrStatus === 'done' ? (
+            <OcrConfirm onClose={handleOcrClose} />
+          ) : (
+            <OcrCapture onClose={handleOcrClose} />
+          ))}
 
         <ConfirmDialog
           open={deletingItemId !== null}

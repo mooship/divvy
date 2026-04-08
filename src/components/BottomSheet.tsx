@@ -1,5 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
+import clsx from 'clsx'
 
 interface BottomSheetProps {
   children: React.ReactNode
@@ -19,7 +20,10 @@ export function BottomSheet({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-ink/40 z-50 animate-fade-in" />
         <Dialog.Content
-          className={`fixed bottom-0 left-0 right-0 bg-bg w-full max-w-md mx-auto rounded-t-2xl p-6 z-50 animate-slide-up${className ? ` ${className}` : ''}`}
+          className={clsx(
+            'fixed bottom-0 left-0 right-0 bg-bg w-full max-w-md mx-auto rounded-t-2xl p-6 z-50 animate-slide-up',
+            className,
+          )}
           style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}
           aria-label={ariaLabel}
         >

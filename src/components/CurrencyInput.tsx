@@ -30,13 +30,15 @@ export function CurrencyInput({
     value > 0 ? centsToDecimal(value, config.decimalSeparator) : '',
   )
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: isFocused intentionally omitted — effect only syncs external value changes; blur is handled by handleBlur directly to avoid a double setState
   useEffect(() => {
-    if (!isFocused) {
-      setLocalValue(
-        value > 0 ? centsToDecimal(value, config.decimalSeparator) : '',
-      )
+    if (isFocused) {
+      return
     }
-  }, [value, config.decimalSeparator, isFocused])
+    setLocalValue(
+      value > 0 ? centsToDecimal(value, config.decimalSeparator) : '',
+    )
+  }, [value, config.decimalSeparator])
 
   const handleBlur = () => {
     setIsFocused(false)
