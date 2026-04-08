@@ -110,7 +110,7 @@ export function centsToDecimal(
   if (decimals === 0) {
     return cents.toString()
   }
-  return (cents / 100).toFixed(2).replace('.', decimalSeparator)
+  return (cents / 100).toFixed(decimals).replace('.', decimalSeparator)
 }
 
 export function parseCents(

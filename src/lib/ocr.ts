@@ -52,22 +52,30 @@ export interface ParsedItem {
   confidence: number
 }
 
-function buildPriceRegex(config: CurrencyConfig): RegExp {
+const priceRegexCache = new Map<Currency, RegExp>()
+
+function getPriceRegex(currency: Currency, config: CurrencyConfig): RegExp {
+  const cached = priceRegexCache.get(currency)
+  if (cached) {
+    return cached
+  }
+
   const thou =
     config.thousandsSeparator === '.' ? '\\.' : config.thousandsSeparator
   const sym = config.symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
+  let regex: RegExp
   if (config.decimals === 0) {
-    // Allow both thousands-separated (15,000) and plain (12000) numbers
-    return new RegExp(
-      `(?:${sym}\\s*)?(\\d{1,3}(?:${thou}\\d{3})*|\\d+)\\s*$`,
+    regex = new RegExp(`(?:${sym}\\s*)?(\\d{1,3}(?:${thou}\\d{3})*|\\d+)\\s*$`)
+  } else {
+    const dec = config.decimalSeparator === '.' ? '\\.' : ','
+    regex = new RegExp(
+      `(?:${sym}\\s*)?(\\d{1,3}(?:${thou}\\d{3})*${dec}\\d{1,3})\\s*$`,
     )
   }
 
-  const dec = config.decimalSeparator === '.' ? '\\.' : ','
-  return new RegExp(
-    `(?:${sym}\\s*)?(\\d{1,3}(?:${thou}\\d{3})*${dec}\\d{1,3})\\s*$`,
-  )
+  priceRegexCache.set(currency, regex)
+  return regex
 }
 
 export function parseReceiptLines(
@@ -77,7 +85,7 @@ export function parseReceiptLines(
   const config = CURRENCY_CONFIG[currency]
   const results: ParsedItem[] = []
 
-  const priceRegex = buildPriceRegex(config)
+  const priceRegex = getPriceRegex(currency, config)
   const thousandsRe = new RegExp(
     config.thousandsSeparator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
     'g',

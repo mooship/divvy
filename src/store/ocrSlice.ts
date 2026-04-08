@@ -26,6 +26,11 @@ interface OcrActions {
   setRawLines: (lines: OcrLine[]) => void
   toggleCandidate: (index: number) => void
   setDetectedCurrency: (currency: Currency | null) => void
+  finishOcr: (result: {
+    rawLines: OcrLine[]
+    candidates: OcrCandidate[]
+    detectedCurrency: Currency | null
+  }) => void
   clearOcr: () => void
 }
 
@@ -46,6 +51,14 @@ export const useOcrStore = create<OcrState & OcrActions>()((set) => ({
       ),
     })),
   setDetectedCurrency: (currency) => set({ detectedCurrency: currency }),
+  finishOcr: ({ rawLines, candidates, detectedCurrency }) =>
+    set({
+      status: 'done',
+      progress: 100,
+      rawLines,
+      candidates,
+      detectedCurrency,
+    }),
   clearOcr: () =>
     set({
       status: 'idle',

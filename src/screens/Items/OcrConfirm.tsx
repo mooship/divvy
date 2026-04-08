@@ -19,7 +19,6 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
     toggleCandidate,
     rawLines,
     detectedCurrency,
-    setDetectedCurrency,
     clearOcr,
   } = useOcrStore(
     useShallow((s) => ({
@@ -28,7 +27,6 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
       toggleCandidate: s.toggleCandidate,
       rawLines: s.rawLines,
       detectedCurrency: s.detectedCurrency,
-      setDetectedCurrency: s.setDetectedCurrency,
       clearOcr: s.clearOcr,
     })),
   )
@@ -42,8 +40,10 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
     }
     setCurrency(detectedCurrency)
     const reparsed = parseReceiptLines(rawLines, detectedCurrency)
-    setCandidates(reparsed.map((p) => ({ ...p, selected: true })))
-    setDetectedCurrency(null)
+    useOcrStore.setState({
+      candidates: reparsed.map((p) => ({ ...p, selected: true })),
+      detectedCurrency: null,
+    })
   }
 
   const selectedCandidates = useMemo(
@@ -124,7 +124,7 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
           </button>
           <button
             type="button"
-            onClick={() => setDetectedCurrency(null)}
+            onClick={() => useOcrStore.setState({ detectedCurrency: null })}
             className="shrink-0"
             aria-label="Dismiss currency suggestion"
           >
