@@ -1,4 +1,5 @@
 import { CURRENCY_CONFIG, type Currency } from '../types'
+import { parseCents } from './calc'
 
 // Keywords safe to match as whole words anywhere in the name
 const KEYWORD_PATTERNS = [
@@ -65,6 +66,10 @@ export function parseReceiptLines(
   const priceRegex = new RegExp(
     `(?:${sym}\\s*)?(\\d{1,3}(?:${thou}\\d{3})*${dec}\\d{1,3})\\s*$`,
   )
+  const thousandsRe = new RegExp(
+    config.thousandsSeparator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+    'g',
+  )
 
   for (const line of lines) {
     const trimmed = line.text.trim()
@@ -77,11 +82,8 @@ export function parseReceiptLines(
       continue
     }
 
-    const priceStr = match[1]
-      .replaceAll(config.thousandsSeparator, '')
-      .replace(config.decimalSeparator, '.')
-    const price = Math.round(parseFloat(priceStr) * 100)
-    if (Number.isNaN(price) || price <= 0) {
+    const price = parseCents(match[1], thousandsRe, config.decimalSeparator)
+    if (price === null || price <= 0) {
       continue
     }
 

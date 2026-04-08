@@ -1,5 +1,5 @@
 import { Check, Receipt, Share2 } from 'lucide-react'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useShallow } from 'zustand/shallow'
 import { BottomAction } from '../../components/BottomAction'
@@ -21,6 +21,15 @@ export function Summary({ readOnly = false }: SummaryProps) {
   const [copied, setCopied] = useState(false)
   const [showNewBillConfirm, setShowNewBillConfirm] = useState(false)
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout>>(null)
+
+  useEffect(() => {
+    return () => {
+      if (copiedTimerRef.current) {
+        clearTimeout(copiedTimerRef.current)
+      }
+    }
+  }, [])
+
   const reset = useBillStore((s) => s.reset)
   const storeState = useBillStore(
     useShallow((s) => ({
@@ -34,13 +43,13 @@ export function Summary({ readOnly = false }: SummaryProps) {
     })),
   )
 
+  const d = readOnly ? searchParams.get('d') : null
   const bill: Bill | null = useMemo(() => {
     if (readOnly) {
-      const d = searchParams.get('d')
       return d ? decodeBill(d) : null
     }
     return storeState
-  }, [readOnly, searchParams, storeState])
+  }, [readOnly, d, storeState])
 
   const totals = useMemo(() => (bill ? calculateTotals(bill) : []), [bill])
   const grandTotal = totals.reduce((s, t) => s + t.total, 0)

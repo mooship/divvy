@@ -23,7 +23,6 @@ interface BillActions {
   reset: () => void
 }
 
-const RECENT_BILLS_KEY = STORAGE_KEYS.RECENT_BILLS
 const MAX_RECENT = 5
 
 function saveToRecent(bill: Bill): void {
@@ -42,13 +41,13 @@ function saveToRecent(bill: Bill): void {
   }
   try {
     const existing: BillSummary[] = JSON.parse(
-      localStorage.getItem(RECENT_BILLS_KEY) ?? '[]',
+      localStorage.getItem(STORAGE_KEYS.RECENT_BILLS) ?? '[]',
     )
     const updated = [
       summary,
       ...existing.filter((b) => b.id !== bill.id),
     ].slice(0, MAX_RECENT)
-    localStorage.setItem(RECENT_BILLS_KEY, JSON.stringify(updated))
+    localStorage.setItem(STORAGE_KEYS.RECENT_BILLS, JSON.stringify(updated))
   } catch {
     // localStorage unavailable or corrupt — silently skip
   }
@@ -56,7 +55,7 @@ function saveToRecent(bill: Bill): void {
 
 export function getRecentBills(): BillSummary[] {
   try {
-    return JSON.parse(localStorage.getItem(RECENT_BILLS_KEY) ?? '[]')
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.RECENT_BILLS) ?? '[]')
   } catch {
     return []
   }

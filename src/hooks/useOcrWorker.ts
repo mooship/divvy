@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import type { OcrLine } from '../lib/ocr'
 import type { OcrLanguage } from '../types'
 
@@ -70,6 +70,15 @@ export function useOcrWorker() {
     if (stateRef.current) {
       await stateRef.current.worker.terminate()
       stateRef.current = null
+    }
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (stateRef.current) {
+        stateRef.current.worker.terminate()
+        stateRef.current = null
+      }
     }
   }, [])
 

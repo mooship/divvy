@@ -62,7 +62,6 @@ export function Setup() {
               className="flex gap-2 flex-wrap border-0 p-0 m-0"
               aria-labelledby="currency-label"
             >
-              <legend className="sr-only">Currency</legend>
               {(Object.keys(CURRENCY_CONFIG) as Currency[]).map((c) => (
                 <button
                   key={c}

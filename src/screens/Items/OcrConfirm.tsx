@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { BottomSheet } from '../../components/BottomSheet'
 import { CurrencyInput } from '../../components/CurrencyInput'
+import type { OcrCandidate } from '../../store'
 import { useBillStore, useOcrStore } from '../../store'
 
 interface OcrConfirmProps {
@@ -34,12 +35,14 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
     onClose()
   }
 
-  const updateName = (index: number, name: string) => {
-    setCandidates(candidates.map((c, i) => (i === index ? { ...c, name } : c)))
-  }
-
-  const updatePrice = (index: number, price: number) => {
-    setCandidates(candidates.map((c, i) => (i === index ? { ...c, price } : c)))
+  const updateCandidate = <K extends keyof OcrCandidate>(
+    index: number,
+    key: K,
+    value: OcrCandidate[K],
+  ) => {
+    setCandidates(
+      candidates.map((c, i) => (i === index ? { ...c, [key]: value } : c)),
+    )
   }
 
   const selectedCount = selectedCandidates.length
@@ -111,7 +114,7 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
                   id={`ocr-name-${i}`}
                   type="text"
                   value={candidate.name}
-                  onChange={(e) => updateName(i, e.target.value)}
+                  onChange={(e) => updateCandidate(i, 'name', e.target.value)}
                   className="input-text focus-ring text-sm h-10"
                   disabled={!candidate.selected}
                 />
@@ -124,7 +127,7 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
                   id={`ocr-price-${i}`}
                   value={candidate.price}
                   currency={currency}
-                  onChange={(price) => updatePrice(i, price)}
+                  onChange={(price) => updateCandidate(i, 'price', price)}
                   className="h-10"
                 />
               </div>
