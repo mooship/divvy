@@ -27,7 +27,9 @@ export function CurrencyInput({
   )
   const [isFocused, setIsFocused] = useState(false)
   const [localValue, setLocalValue] = useState(() =>
-    value > 0 ? centsToDecimal(value, config.decimalSeparator) : '',
+    value > 0
+      ? centsToDecimal(value, config.decimalSeparator, config.decimals)
+      : '',
   )
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: isFocused intentionally omitted — effect only syncs external value changes; blur is handled by handleBlur directly to avoid a double setState
@@ -36,16 +38,25 @@ export function CurrencyInput({
       return
     }
     setLocalValue(
-      value > 0 ? centsToDecimal(value, config.decimalSeparator) : '',
+      value > 0
+        ? centsToDecimal(value, config.decimalSeparator, config.decimals)
+        : '',
     )
-  }, [value, config.decimalSeparator])
+  }, [value, config.decimalSeparator, config.decimals])
 
   const handleBlur = () => {
     setIsFocused(false)
-    const cents = parseCents(localValue, thousandsRe, config.decimalSeparator)
+    const cents = parseCents(
+      localValue,
+      thousandsRe,
+      config.decimalSeparator,
+      config.decimals,
+    )
     if (cents !== null) {
       onChange(cents)
-      setLocalValue(centsToDecimal(cents, config.decimalSeparator))
+      setLocalValue(
+        centsToDecimal(cents, config.decimalSeparator, config.decimals),
+      )
     } else {
       onChange(0)
       setLocalValue('')
@@ -65,13 +76,18 @@ export function CurrencyInput({
       <input
         id={id}
         type="text"
-        inputMode="decimal"
+        inputMode={config.decimals === 0 ? 'numeric' : 'decimal'}
         autoComplete="off"
         value={localValue}
         onChange={(e) => {
           const raw = e.target.value
           setLocalValue(raw)
-          const cents = parseCents(raw, thousandsRe, config.decimalSeparator)
+          const cents = parseCents(
+            raw,
+            thousandsRe,
+            config.decimalSeparator,
+            config.decimals,
+          )
           if (cents !== null) {
             onChange(cents)
           } else if (raw === '') {
@@ -80,14 +96,19 @@ export function CurrencyInput({
         }}
         onFocus={() => setIsFocused(true)}
         onBlur={handleBlur}
-        placeholder={placeholder ?? `0${config.decimalSeparator}00`}
+        placeholder={
+          placeholder ??
+          (config.decimals === 0 ? '0' : `0${config.decimalSeparator}00`)
+        }
         className={clsx(
           'input-text focus-ring',
           config.symbolPosition === 'prefix'
-            ? config.symbol.length > 1
-              ? 'pl-12'
-              : 'pl-8'
-            : 'pr-8',
+            ? config.symbol.length > 2
+              ? 'pl-14'
+              : config.symbol.length > 1
+                ? 'pl-12'
+                : 'pl-8'
+            : 'pr-10',
         )}
       />
       {config.symbolPosition === 'suffix' && (

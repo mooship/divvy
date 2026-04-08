@@ -180,4 +180,24 @@ describe('formatCents', () => {
   it('formats CHF with prefix symbol', () => {
     expect(formatCents(1850, 'CHF')).toBe('CHF18.50')
   })
+
+  it('formats JPY with no decimals (zero-decimal currency)', () => {
+    expect(formatCents(1250, 'JPY')).toBe('¥1250')
+  })
+
+  it('formats KRW with no decimals (zero-decimal currency)', () => {
+    expect(formatCents(5000, 'KRW')).toBe('₩5000')
+  })
+
+  it('formats suffix currency (SEK)', () => {
+    expect(formatCents(1250, 'SEK')).toBe('12,50 kr')
+  })
+
+  it('formats suffix currency (PLN)', () => {
+    expect(formatCents(9999, 'PLN')).toBe('99,99 zł')
+  })
+
+  it('formats AUD with prefix symbol', () => {
+    expect(formatCents(2500, 'AUD')).toBe('A$25.00')
+  })
 })

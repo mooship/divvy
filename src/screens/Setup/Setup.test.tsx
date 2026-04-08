@@ -18,7 +18,7 @@ beforeEach(() => {
 })
 
 describe('Setup', () => {
-  it('renders the currency selector', () => {
+  it('renders popular currencies and More button', () => {
     render(
       <MemoryRouter>
         <Setup />
@@ -26,6 +26,7 @@ describe('Setup', () => {
     )
     expect(screen.getByRole('button', { name: /ZAR/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /USD/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /more/i })).toBeInTheDocument()
   })
 
   it('adds a person when name is entered and Add is clicked', () => {

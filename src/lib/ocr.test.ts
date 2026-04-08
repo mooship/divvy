@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { type OcrLine, parseReceiptLines } from './ocr'
+import { detectCurrency, type OcrLine, parseReceiptLines } from './ocr'
 
 const toLines = (texts: string[], confidence = 95): OcrLine[] =>
   texts.map((text) => ({ text, confidence }))
@@ -289,5 +289,70 @@ describe('parseReceiptLines', () => {
       )
       expect(items).toHaveLength(1)
     })
+  })
+
+  describe('zero-decimal currencies', () => {
+    it('parses JPY prices as whole numbers', () => {
+      const items = parseReceiptLines(toLines(['Ramen    ¥850']), 'JPY')
+      expect(items).toHaveLength(1)
+      expect(items[0].name).toBe('Ramen')
+      expect(items[0].price).toBe(850)
+    })
+
+    it('parses KRW prices as whole numbers', () => {
+      const items = parseReceiptLines(toLines(['Bibimbap    ₩12000']), 'KRW')
+      expect(items).toHaveLength(1)
+      expect(items[0].price).toBe(12000)
+    })
+
+    it('parses JPY with thousands separator', () => {
+      const items = parseReceiptLines(toLines(['Wagyu    ¥15,000']), 'JPY')
+      expect(items).toHaveLength(1)
+      expect(items[0].price).toBe(15000)
+    })
+  })
+})
+
+describe('detectCurrency', () => {
+  it('detects EUR from euro symbols', () => {
+    expect(detectCurrency(toLines(['Pizza    €12,50', 'Pasta    €8,00']))).toBe(
+      'EUR',
+    )
+  })
+
+  it('detects USD from dollar signs', () => {
+    expect(
+      detectCurrency(toLines(['Burger    $12.50', 'Fries    $5.00'])),
+    ).toBe('USD')
+  })
+
+  it('detects GBP from pound symbols', () => {
+    expect(detectCurrency(toLines(['Fish    £12.50', 'Chips    £3.00']))).toBe(
+      'GBP',
+    )
+  })
+
+  it('detects ZAR from R symbol', () => {
+    expect(
+      detectCurrency(toLines(['Biltong    R 45.00', 'Rooibos    R 20.00'])),
+    ).toBe('ZAR')
+  })
+
+  it('returns null when no currency symbols found', () => {
+    expect(detectCurrency(toLines(['Burger    12.50', 'No symbol']))).toBeNull()
+  })
+
+  it('returns most frequent currency when mixed', () => {
+    expect(
+      detectCurrency(
+        toLines(['Item    €10,00', 'Item    €5,00', 'Item    $3.00']),
+      ),
+    ).toBe('EUR')
+  })
+
+  it('prefers longer symbol match (R$ over R)', () => {
+    expect(detectCurrency(toLines(['Item    R$10,00', 'Item    R$5,00']))).toBe(
+      'BRL',
+    )
   })
 })

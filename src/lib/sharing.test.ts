@@ -87,4 +87,21 @@ describe('sharing', () => {
     const encoded = LZString.compressToEncodedURIComponent(JSON.stringify(bad))
     expect(decodeBill(encoded)).toBeNull()
   })
+
+  it('round-trips a bill with a newly added currency (JPY)', () => {
+    const jpyBill: Bill = {
+      ...bill,
+      currency: 'JPY',
+      items: [{ id: 'i1', name: 'Ramen', price: 850, assignedTo: ['alice'] }],
+    }
+    const encoded = encodeBill(jpyBill)
+    const decoded = decodeBill(encoded)
+    expect(decoded).toEqual(jpyBill)
+  })
+
+  it('round-trips a bill with AUD currency', () => {
+    const audBill: Bill = { ...bill, currency: 'AUD' }
+    const decoded = decodeBill(encodeBill(audBill))
+    expect(decoded).toEqual(audBill)
+  })
 })

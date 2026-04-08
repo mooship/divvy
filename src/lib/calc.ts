@@ -105,7 +105,11 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
 export function centsToDecimal(
   cents: number,
   decimalSeparator: string,
+  decimals: number = 2,
 ): string {
+  if (decimals === 0) {
+    return cents.toString()
+  }
   return (cents / 100).toFixed(2).replace('.', decimalSeparator)
 }
 
@@ -113,10 +117,14 @@ export function parseCents(
   raw: string,
   thousandsRe: RegExp,
   decSep: string,
+  decimals: number = 2,
 ): number | null {
   const normalised = raw.replace(thousandsRe, '').replace(decSep, '.')
   const parsed = parseFloat(normalised)
   if (!Number.isNaN(parsed) && parsed >= 0) {
+    if (decimals === 0) {
+      return Math.round(parsed)
+    }
     return Math.round(parsed * 100)
   }
   return null
@@ -124,7 +132,7 @@ export function parseCents(
 
 export function formatCents(cents: number, currency: Currency): string {
   const config = CURRENCY_CONFIG[currency]
-  const amount = centsToDecimal(cents, config.decimalSeparator)
+  const amount = centsToDecimal(cents, config.decimalSeparator, config.decimals)
   return config.symbolPosition === 'prefix'
     ? `${config.symbol}${amount}`
     : `${amount} ${config.symbol}`

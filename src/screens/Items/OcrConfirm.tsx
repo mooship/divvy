@@ -1,26 +1,50 @@
-import { Check } from 'lucide-react'
+import { Check, X } from 'lucide-react'
 import { useMemo } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { BottomSheet } from '../../components/BottomSheet'
 import { CurrencyInput } from '../../components/CurrencyInput'
+import { parseReceiptLines } from '../../lib/ocr'
 import type { OcrCandidate } from '../../store'
 import { useBillStore, useOcrStore } from '../../store'
+import { CURRENCY_CONFIG } from '../../types'
 
 interface OcrConfirmProps {
   onClose: () => void
 }
 
 export function OcrConfirm({ onClose }: OcrConfirmProps) {
-  const { candidates, setCandidates, toggleCandidate, clearOcr } = useOcrStore(
+  const {
+    candidates,
+    setCandidates,
+    toggleCandidate,
+    rawLines,
+    detectedCurrency,
+    setDetectedCurrency,
+    clearOcr,
+  } = useOcrStore(
     useShallow((s) => ({
       candidates: s.candidates,
       setCandidates: s.setCandidates,
       toggleCandidate: s.toggleCandidate,
+      rawLines: s.rawLines,
+      detectedCurrency: s.detectedCurrency,
+      setDetectedCurrency: s.setDetectedCurrency,
       clearOcr: s.clearOcr,
     })),
   )
   const addItem = useBillStore((s) => s.addItem)
+  const setCurrency = useBillStore((s) => s.setCurrency)
   const currency = useBillStore((s) => s.currency)
+
+  const handleSwitchCurrency = () => {
+    if (!detectedCurrency || rawLines.length === 0) {
+      return
+    }
+    setCurrency(detectedCurrency)
+    const reparsed = parseReceiptLines(rawLines, detectedCurrency)
+    setCandidates(reparsed.map((p) => ({ ...p, selected: true })))
+    setDetectedCurrency(null)
+  }
 
   const selectedCandidates = useMemo(
     () => candidates.filter((c) => c.selected),
@@ -78,6 +102,36 @@ export function OcrConfirm({ onClose }: OcrConfirmProps) {
       <p className="text-sm text-muted mb-4">
         Review the scanned items. Uncheck any you don't want to add.
       </p>
+
+      {detectedCurrency && detectedCurrency !== currency && (
+        <div
+          className="flex items-center gap-2 bg-teal/10 text-teal rounded-lg px-3 py-2 mb-4 text-sm"
+          role="status"
+        >
+          <span className="flex-1">
+            This receipt looks like{' '}
+            <strong>
+              {CURRENCY_CONFIG[detectedCurrency].symbol} {detectedCurrency}
+            </strong>
+            . Switch?
+          </span>
+          <button
+            type="button"
+            onClick={handleSwitchCurrency}
+            className="font-bold underline shrink-0"
+          >
+            Switch
+          </button>
+          <button
+            type="button"
+            onClick={() => setDetectedCurrency(null)}
+            className="shrink-0"
+            aria-label="Dismiss currency suggestion"
+          >
+            <X className="w-4 h-4" aria-hidden="true" />
+          </button>
+        </div>
+      )}
 
       <ul
         className="flex flex-col gap-2 overflow-y-auto flex-1 mb-4"

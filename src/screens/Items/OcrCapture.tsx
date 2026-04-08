@@ -3,7 +3,11 @@ import { useRef } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { BottomSheet } from '../../components/BottomSheet'
 import { useOcrWorker } from '../../hooks/useOcrWorker'
-import { parseReceiptLines, preprocessImage } from '../../lib/ocr'
+import {
+  detectCurrency,
+  parseReceiptLines,
+  preprocessImage,
+} from '../../lib/ocr'
 import { useBillStore, useOcrStore, usePrefsStore } from '../../store'
 import { OCR_LANGUAGES, type OcrLanguage } from '../../types'
 
@@ -15,17 +19,27 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const cancelledRef = useRef(false)
   const { runOcr, terminateOcr } = useOcrWorker()
-  const { status, progress, setStatus, setProgress, setCandidates, clearOcr } =
-    useOcrStore(
-      useShallow((s) => ({
-        status: s.status,
-        progress: s.progress,
-        setStatus: s.setStatus,
-        setProgress: s.setProgress,
-        setCandidates: s.setCandidates,
-        clearOcr: s.clearOcr,
-      })),
-    )
+  const {
+    status,
+    progress,
+    setStatus,
+    setProgress,
+    setCandidates,
+    setRawLines,
+    setDetectedCurrency,
+    clearOcr,
+  } = useOcrStore(
+    useShallow((s) => ({
+      status: s.status,
+      progress: s.progress,
+      setStatus: s.setStatus,
+      setProgress: s.setProgress,
+      setCandidates: s.setCandidates,
+      setRawLines: s.setRawLines,
+      setDetectedCurrency: s.setDetectedCurrency,
+      clearOcr: s.clearOcr,
+    })),
+  )
   const currency = useBillStore((s) => s.currency)
   const ocrLanguage = usePrefsStore((s) => s.ocrLanguage)
   const setOcrLanguage = usePrefsStore((s) => s.setOcrLanguage)
@@ -45,6 +59,11 @@ export function OcrCapture({ onClose }: OcrCaptureProps) {
       const parsed = parseReceiptLines(ocrLines, currency)
 
       if (!cancelledRef.current) {
+        setRawLines(ocrLines)
+        const detected = detectCurrency(ocrLines)
+        if (detected && detected !== currency) {
+          setDetectedCurrency(detected)
+        }
         setCandidates(parsed.map((p) => ({ ...p, selected: true })))
         setStatus('done')
         setProgress(100)
