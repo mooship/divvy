@@ -1,11 +1,11 @@
 import clsx from 'clsx'
-import { Receipt } from 'lucide-react'
+import { Receipt, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ConfirmDialog } from '../../components/ConfirmDialog'
 import { PageLayout } from '../../components/PageLayout'
 import { formatCents } from '../../lib/calc'
-import { getRecentBills, useBillStore } from '../../store'
+import { deleteRecentBill, getRecentBills, useBillStore } from '../../store'
 import type { BillSummary } from '../../types'
 
 export function Home() {
@@ -19,6 +19,14 @@ export function Home() {
   }, [])
 
   const [showNewBillConfirm, setShowNewBillConfirm] = useState(false)
+  const [deletingBillId, setDeletingBillId] = useState<string | null>(null)
+
+  const handleDeleteBill = () => {
+    if (deletingBillId) {
+      setRecentBills(deleteRecentBill(deletingBillId))
+    }
+    setDeletingBillId(null)
+  }
 
   const handleStart = () => {
     if (hasBill) {
@@ -87,43 +95,63 @@ export function Home() {
               Recent bills
             </h2>
             <ul className="flex flex-col gap-2">
-              {recentBills.map((bill) => {
-                const inner = (
-                  <>
-                    <div>
-                      <p className="font-medium text-ink">
-                        {bill.peopleCount} people
-                      </p>
-                      <p className="text-xs text-muted">
-                        {new Date(bill.date).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <span className="font-bold text-ink">
-                      {formatCents(bill.total, bill.currency)}
-                    </span>
-                  </>
-                )
-                return (
-                  <li key={bill.id}>
-                    {bill.encoded ? (
-                      <button
-                        type="button"
-                        onClick={() => navigate(`/bill?d=${bill.encoded}`)}
-                        className="card p-3 min-h-11 w-full flex justify-between items-center focus-ring text-left"
-                      >
-                        {inner}
-                      </button>
-                    ) : (
-                      <div className="card p-3 flex justify-between items-center">
-                        {inner}
+              {recentBills.map((bill) => (
+                <li key={bill.id} className="card p-3 flex items-center gap-2">
+                  {bill.encoded ? (
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/bill?d=${bill.encoded}`)}
+                      className="flex-1 flex justify-between items-center focus-ring rounded-lg p-1 text-left"
+                    >
+                      <div>
+                        <p className="font-medium text-ink">
+                          {bill.peopleCount} people
+                        </p>
+                        <p className="text-xs text-muted">
+                          {new Date(bill.date).toLocaleDateString()}
+                        </p>
                       </div>
-                    )}
-                  </li>
-                )
-              })}
+                      <span className="font-bold text-ink">
+                        {formatCents(bill.total, bill.currency)}
+                      </span>
+                    </button>
+                  ) : (
+                    <div className="flex-1 flex justify-between items-center p-1">
+                      <div>
+                        <p className="font-medium text-ink">
+                          {bill.peopleCount} people
+                        </p>
+                        <p className="text-xs text-muted">
+                          {new Date(bill.date).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <span className="font-bold text-ink">
+                        {formatCents(bill.total, bill.currency)}
+                      </span>
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setDeletingBillId(bill.id)}
+                    className="btn-icon-delete"
+                    aria-label={`Delete bill from ${new Date(bill.date).toLocaleDateString()}`}
+                  >
+                    <Trash2 className="w-5 h-5" aria-hidden="true" />
+                  </button>
+                </li>
+              ))}
             </ul>
           </section>
         )}
+
+        <ConfirmDialog
+          open={deletingBillId !== null}
+          title="Delete this bill?"
+          description="This bill will be permanently removed from your recent bills."
+          confirmLabel="Delete"
+          onConfirm={handleDeleteBill}
+          onCancel={() => setDeletingBillId(null)}
+        />
 
         <ConfirmDialog
           open={showNewBillConfirm}

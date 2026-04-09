@@ -62,6 +62,19 @@ export function getRecentBills(): BillSummary[] {
   }
 }
 
+export function deleteRecentBill(id: string): BillSummary[] {
+  try {
+    const existing: BillSummary[] = JSON.parse(
+      localStorage.getItem(STORAGE_KEYS.RECENT_BILLS) ?? '[]',
+    )
+    const updated = existing.filter((b) => b.id !== id)
+    localStorage.setItem(STORAGE_KEYS.RECENT_BILLS, JSON.stringify(updated))
+    return updated
+  } catch {
+    return []
+  }
+}
+
 const DEFAULT_BILL: Bill = {
   id: '',
   currency: 'ZAR',

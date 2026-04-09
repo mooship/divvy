@@ -40,6 +40,8 @@ export function Summary({ readOnly = false }: SummaryProps) {
       tip: s.tip,
       serviceFee: s.serviceFee,
       deliveryFee: s.deliveryFee,
+      tax: s.tax,
+      discount: s.discount,
     })),
   )
 
