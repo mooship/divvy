@@ -31,6 +31,7 @@ export function Summary({ readOnly = false }: SummaryProps) {
   }, [])
 
   const reset = useBillStore((s) => s.reset)
+  const saveCurrentBill = useBillStore((s) => s.saveCurrentBill)
   const storeState = useBillStore(
     useShallow((s) => ({
       id: s.id,
@@ -55,6 +56,12 @@ export function Summary({ readOnly = false }: SummaryProps) {
 
   const totals = useMemo(() => (bill ? calculateTotals(bill) : []), [bill])
   const grandTotal = totals.reduce((s, t) => s + t.total, 0)
+
+  useEffect(() => {
+    if (!readOnly) {
+      saveCurrentBill()
+    }
+  }, [readOnly, saveCurrentBill])
 
   const handleShare = useCallback(async () => {
     if (!bill) {
