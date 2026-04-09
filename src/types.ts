@@ -302,6 +302,8 @@ export interface Bill {
   tip: SharedCost
   serviceFee: SharedCost
   deliveryFee: SharedCost
+  tax: SharedCost
+  discount: SharedCost
 }
 
 export interface PersonTotal {
@@ -311,6 +313,8 @@ export interface PersonTotal {
   tipShare: number
   serviceFeeShare: number
   deliveryFeeShare: number
+  taxShare: number
+  discountShare: number
   total: number
   itemBreakdown: Array<{ itemId: string; name: string; amount: number }>
 }

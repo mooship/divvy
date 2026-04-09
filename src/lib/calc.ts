@@ -3,10 +3,22 @@ import {
   CURRENCY_CONFIG,
   type Currency,
   type PersonTotal,
+  type SharedCost,
 } from '../types'
 
+const DEFAULT_TAX: SharedCost = { type: 'percentage', value: 0 }
+const DEFAULT_DISCOUNT: SharedCost = { type: 'fixed', value: 0 }
+
 export function calculateTotals(bill: Bill): PersonTotal[] {
-  const { people, items, tip, serviceFee, deliveryFee } = bill
+  const {
+    people,
+    items,
+    tip,
+    serviceFee,
+    deliveryFee,
+    tax = DEFAULT_TAX,
+    discount = DEFAULT_DISCOUNT,
+  } = bill
 
   const itemSubtotals = new Map<string, number>()
   const itemBreakdowns = new Map<string, PersonTotal['itemBreakdown']>()
@@ -44,6 +56,8 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
   const tipTotal = resolveSharedCost(tip)
   const serviceFeeTotal = resolveSharedCost(serviceFee)
   const deliveryFeeTotal = resolveSharedCost(deliveryFee)
+  const taxTotal = resolveSharedCost(tax)
+  const discountTotal = resolveSharedCost(discount)
 
   const distribute = (total: number): Map<string, number> => {
     if (total === 0) {
@@ -83,12 +97,16 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
   const tipShares = distribute(tipTotal)
   const serviceFeeShares = distribute(serviceFeeTotal)
   const deliveryFeeShares = distribute(deliveryFeeTotal)
+  const taxShares = distribute(taxTotal)
+  const discountShares = distribute(discountTotal)
 
   return people.map((person) => {
     const itemsSubtotal = itemSubtotals.get(person.id) ?? 0
     const tipShare = tipShares.get(person.id) ?? 0
     const serviceFeeShare = serviceFeeShares.get(person.id) ?? 0
     const deliveryFeeShare = deliveryFeeShares.get(person.id) ?? 0
+    const taxShare = taxShares.get(person.id) ?? 0
+    const discountShare = discountShares.get(person.id) ?? 0
     return {
       personId: person.id,
       name: person.name,
@@ -96,7 +114,15 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
       tipShare,
       serviceFeeShare,
       deliveryFeeShare,
-      total: itemsSubtotal + tipShare + serviceFeeShare + deliveryFeeShare,
+      taxShare,
+      discountShare,
+      total:
+        itemsSubtotal +
+        tipShare +
+        serviceFeeShare +
+        deliveryFeeShare +
+        taxShare -
+        discountShare,
       itemBreakdown: itemBreakdowns.get(person.id) ?? [],
     }
   })

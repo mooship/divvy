@@ -18,6 +18,8 @@ const BILL_STATE = {
   tip: { type: 'percentage' as const, value: 0 },
   serviceFee: { type: 'fixed' as const, value: 0 },
   deliveryFee: { type: 'fixed' as const, value: 0 },
+  tax: { type: 'percentage' as const, value: 0 },
+  discount: { type: 'fixed' as const, value: 0 },
 }
 
 beforeEach(() => {

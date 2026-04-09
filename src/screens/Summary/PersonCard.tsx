@@ -41,6 +41,7 @@ export function PersonCard({ total, currency, personIndex }: PersonCardProps) {
             ['Tip', total.tipShare],
             ['Service fee', total.serviceFeeShare],
             ['Delivery fee', total.deliveryFeeShare],
+            ['Tax', total.taxShare],
           ] as const
         )
           .filter(([, amount]) => amount > 0)
@@ -50,6 +51,14 @@ export function PersonCard({ total, currency, personIndex }: PersonCardProps) {
               <span className="text-ink">{formatCents(amount, currency)}</span>
             </li>
           ))}
+        {total.discountShare > 0 && (
+          <li className="flex justify-between text-sm">
+            <span className="text-muted">Discount</span>
+            <span className="text-teal">
+              -{formatCents(total.discountShare, currency)}
+            </span>
+          </li>
+        )}
       </ul>
     </section>
   )

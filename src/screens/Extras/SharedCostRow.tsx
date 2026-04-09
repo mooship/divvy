@@ -7,6 +7,7 @@ interface SharedCostRowProps {
   value: SharedCost
   currency: Currency
   onChange: (cost: SharedCost) => void
+  hint?: string
 }
 
 export function SharedCostRow({
@@ -14,6 +15,7 @@ export function SharedCostRow({
   value,
   currency,
   onChange,
+  hint,
 }: SharedCostRowProps) {
   const labelId = label.toLowerCase().replace(/\s+/g, '-')
   return (
@@ -54,6 +56,7 @@ export function SharedCostRow({
           </button>
         </fieldset>
       </div>
+      {hint && <p className="text-xs text-muted mb-3">{hint}</p>}
 
       {value.type === 'percentage' ? (
         <div className="relative">
