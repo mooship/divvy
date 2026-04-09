@@ -3,7 +3,11 @@ import {
   CURRENCY_CONFIG,
   type Currency,
   type PersonTotal,
+  type SharedCost,
 } from '../types'
+
+const DEFAULT_TAX: SharedCost = { type: 'percentage', value: 0 }
+const DEFAULT_DISCOUNT: SharedCost = { type: 'fixed', value: 0 }
 
 export function calculateTotals(bill: Bill): PersonTotal[] {
   const {
@@ -12,8 +16,8 @@ export function calculateTotals(bill: Bill): PersonTotal[] {
     tip,
     serviceFee,
     deliveryFee,
-    tax = { type: 'percentage', value: 0 },
-    discount = { type: 'fixed', value: 0 },
+    tax = DEFAULT_TAX,
+    discount = DEFAULT_DISCOUNT,
   } = bill
 
   const itemSubtotals = new Map<string, number>()

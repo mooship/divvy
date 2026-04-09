@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { BottomSheet } from '../../components/BottomSheet'
 import { CurrencyInput } from '../../components/CurrencyInput'
-import { isValidItem } from '../../lib/validation'
+import { isValidItem, MAX_ITEM_NAME_LENGTH } from '../../lib/validation'
 import { useBillStore } from '../../store'
 import type { Currency, Item } from '../../types'
 
@@ -47,7 +47,7 @@ export function EditItemSheet({ item, currency, onClose }: EditItemSheetProps) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Item name"
-            maxLength={60}
+            maxLength={MAX_ITEM_NAME_LENGTH}
             className="input-text focus-ring"
           />
         </div>

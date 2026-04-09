@@ -87,14 +87,11 @@ export function decodeBill(encoded: string): Bill | null {
     if (!isValidBill(parsed)) {
       return null
     }
-    const bill = parsed as Bill
-    if (!bill.tax) {
-      bill.tax = { type: 'percentage', value: 0 }
+    return {
+      tax: { type: 'percentage' as const, value: 0 },
+      discount: { type: 'fixed' as const, value: 0 },
+      ...parsed,
     }
-    if (!bill.discount) {
-      bill.discount = { type: 'fixed', value: 0 }
-    }
-    return bill
   } catch {
     return null
   }

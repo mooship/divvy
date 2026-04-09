@@ -95,51 +95,50 @@ export function Home() {
               Recent bills
             </h2>
             <ul className="flex flex-col gap-2">
-              {recentBills.map((bill) => (
-                <li key={bill.id} className="card p-3 flex items-center gap-2">
-                  {bill.encoded ? (
+              {recentBills.map((bill) => {
+                const dateStr = new Date(bill.date).toLocaleDateString()
+                const inner = (
+                  <>
+                    <div>
+                      <p className="font-medium text-ink">
+                        {bill.peopleCount} people
+                      </p>
+                      <p className="text-xs text-muted">{dateStr}</p>
+                    </div>
+                    <span className="font-bold text-ink">
+                      {formatCents(bill.total, bill.currency)}
+                    </span>
+                  </>
+                )
+                return (
+                  <li
+                    key={bill.id}
+                    className="card p-3 flex items-center gap-2"
+                  >
+                    {bill.encoded ? (
+                      <button
+                        type="button"
+                        onClick={() => navigate(`/bill?d=${bill.encoded}`)}
+                        className="flex-1 flex justify-between items-center focus-ring rounded-lg p-1 text-left"
+                      >
+                        {inner}
+                      </button>
+                    ) : (
+                      <div className="flex-1 flex justify-between items-center p-1">
+                        {inner}
+                      </div>
+                    )}
                     <button
                       type="button"
-                      onClick={() => navigate(`/bill?d=${bill.encoded}`)}
-                      className="flex-1 flex justify-between items-center focus-ring rounded-lg p-1 text-left"
+                      onClick={() => setDeletingBillId(bill.id)}
+                      className="btn-icon-delete"
+                      aria-label={`Delete bill from ${dateStr}`}
                     >
-                      <div>
-                        <p className="font-medium text-ink">
-                          {bill.peopleCount} people
-                        </p>
-                        <p className="text-xs text-muted">
-                          {new Date(bill.date).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <span className="font-bold text-ink">
-                        {formatCents(bill.total, bill.currency)}
-                      </span>
+                      <Trash2 className="w-5 h-5" aria-hidden="true" />
                     </button>
-                  ) : (
-                    <div className="flex-1 flex justify-between items-center p-1">
-                      <div>
-                        <p className="font-medium text-ink">
-                          {bill.peopleCount} people
-                        </p>
-                        <p className="text-xs text-muted">
-                          {new Date(bill.date).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <span className="font-bold text-ink">
-                        {formatCents(bill.total, bill.currency)}
-                      </span>
-                    </div>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => setDeletingBillId(bill.id)}
-                    className="btn-icon-delete"
-                    aria-label={`Delete bill from ${new Date(bill.date).toLocaleDateString()}`}
-                  >
-                    <Trash2 className="w-5 h-5" aria-hidden="true" />
-                  </button>
-                </li>
-              ))}
+                  </li>
+                )
+              })}
             </ul>
           </section>
         )}

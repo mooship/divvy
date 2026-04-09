@@ -8,7 +8,7 @@ import { ConfirmDialog } from '../../components/ConfirmDialog'
 import { CurrencyPicker } from '../../components/CurrencyPicker'
 import { PageLayout } from '../../components/PageLayout'
 import { PersonChip } from '../../components/PersonChip'
-import { isDuplicateName } from '../../lib/validation'
+import { isDuplicateName, MAX_PERSON_NAME_LENGTH } from '../../lib/validation'
 import { useBillStore, usePrefsStore } from '../../store'
 import { CURRENCY_CONFIG, type Currency, POPULAR_CURRENCIES } from '../../types'
 
@@ -160,8 +160,11 @@ export function Setup() {
                   }}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddPerson()}
                   placeholder="Add a name..."
-                  maxLength={30}
-                  className={`input-text focus-ring${nameError ? ' border-danger' : ''}`}
+                  maxLength={MAX_PERSON_NAME_LENGTH}
+                  className={clsx(
+                    'input-text focus-ring',
+                    nameError && 'border-danger',
+                  )}
                 />
               </div>
               <button

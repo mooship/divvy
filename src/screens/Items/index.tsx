@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { Camera, Pizza, Plus, Trash2, Users } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -8,7 +9,7 @@ import { CurrencyInput } from '../../components/CurrencyInput'
 import { PageLayout } from '../../components/PageLayout'
 import { PersonChip } from '../../components/PersonChip'
 import { formatCents } from '../../lib/calc'
-import { isValidItem } from '../../lib/validation'
+import { isValidItem, MAX_ITEM_NAME_LENGTH } from '../../lib/validation'
 import { useBillStore, useOcrStore } from '../../store'
 
 import { AssignModal } from './AssignModal'
@@ -72,6 +73,9 @@ export function Items() {
   }
 
   const hasAnyAssignment = items.some((i) => i.assignedTo.length > 0)
+  const editItem = editingItemId
+    ? (items.find((i) => i.id === editingItemId) ?? null)
+    : null
   const itemToDelete = items.find((i) => i.id === deletingItemId)
 
   return (
@@ -195,8 +199,11 @@ export function Items() {
                     }
                   }}
                   placeholder="Item name"
-                  maxLength={60}
-                  className={`input-text focus-ring${itemError ? ' border-danger' : ''}`}
+                  maxLength={MAX_ITEM_NAME_LENGTH}
+                  className={clsx(
+                    'input-text focus-ring',
+                    itemError && 'border-danger',
+                  )}
                 />
               </div>
               <div>
@@ -233,18 +240,14 @@ export function Items() {
             onClose={() => setAssigningItemId(null)}
           />
         )}
-        {editingItemId &&
-          (() => {
-            const editItem = items.find((i) => i.id === editingItemId)
-            return editItem ? (
-              <EditItemSheet
-                key={editingItemId}
-                item={editItem}
-                currency={currency}
-                onClose={() => setEditingItemId(null)}
-              />
-            ) : null
-          })()}
+        {editItem && (
+          <EditItemSheet
+            key={editingItemId}
+            item={editItem}
+            currency={currency}
+            onClose={() => setEditingItemId(null)}
+          />
+        )}
         {showOcr &&
           (ocrStatus === 'done' ? (
             <OcrConfirm onClose={handleOcrClose} />

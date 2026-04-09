@@ -20,7 +20,6 @@ export function SharedCostRow({
   const labelId = label.toLowerCase().replace(/\s+/g, '-')
   return (
     <section className="card p-4" aria-labelledby={labelId}>
-      {hint && <p className="text-xs text-muted mb-2">{hint}</p>}
       <div className="flex items-center justify-between mb-3">
         <h2 id={labelId} className="font-bold text-ink">
           {label}
@@ -57,6 +56,7 @@ export function SharedCostRow({
           </button>
         </fieldset>
       </div>
+      {hint && <p className="text-xs text-muted mb-3">{hint}</p>}
 
       {value.type === 'percentage' ? (
         <div className="relative">
