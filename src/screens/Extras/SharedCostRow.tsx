@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { Plus, X } from 'lucide-react'
 import { CurrencyInput } from '../../components/CurrencyInput'
 import type { Currency, SharedCost } from '../../types'
 
@@ -8,6 +9,9 @@ interface SharedCostRowProps {
   currency: Currency
   onChange: (cost: SharedCost) => void
   hint?: string
+  expanded: boolean
+  onToggle: () => void
+  collapsedHint?: string
 }
 
 export function SharedCostRow({
@@ -16,45 +20,83 @@ export function SharedCostRow({
   currency,
   onChange,
   hint,
+  expanded,
+  onToggle,
+  collapsedHint,
 }: SharedCostRowProps) {
   const labelId = label.toLowerCase().replace(/\s+/g, '-')
+
+  if (!expanded) {
+    return (
+      <section className="card p-4" aria-labelledby={labelId}>
+        <button
+          type="button"
+          onClick={onToggle}
+          className="w-full flex items-center justify-between focus-ring rounded-lg"
+        >
+          <div className="flex flex-col items-start">
+            <h2 id={labelId} className="font-bold text-ink">
+              {label}
+            </h2>
+            {collapsedHint && (
+              <p className="text-xs text-muted mt-1">{collapsedHint}</p>
+            )}
+          </div>
+          <span className="flex items-center gap-1 text-sm font-medium text-coral">
+            <Plus className="w-4 h-4" aria-hidden="true" /> Add
+          </span>
+        </button>
+      </section>
+    )
+  }
+
   return (
     <section className="card p-4" aria-labelledby={labelId}>
       <div className="flex items-center justify-between mb-3">
         <h2 id={labelId} className="font-bold text-ink">
           {label}
         </h2>
-        <fieldset
-          className="flex rounded-lg overflow-hidden border-2 border-surface"
-          aria-label={`${label} type`}
-        >
+        <div className="flex items-center gap-2">
+          <fieldset
+            className="flex rounded-lg overflow-hidden border-2 border-surface"
+            aria-label={`${label} type`}
+          >
+            <button
+              type="button"
+              onClick={() => onChange({ type: 'percentage', value: 0 })}
+              className={clsx(
+                'min-h-11 px-4 text-sm font-bold focus-ring',
+                value.type === 'percentage'
+                  ? 'bg-coral text-white'
+                  : 'bg-white text-ink',
+              )}
+              aria-pressed={value.type === 'percentage'}
+            >
+              %
+            </button>
+            <button
+              type="button"
+              onClick={() => onChange({ type: 'fixed', value: 0 })}
+              className={clsx(
+                'min-h-11 px-4 text-sm font-bold focus-ring',
+                value.type === 'fixed'
+                  ? 'bg-coral text-white'
+                  : 'bg-white text-ink',
+              )}
+              aria-pressed={value.type === 'fixed'}
+            >
+              Fixed
+            </button>
+          </fieldset>
           <button
             type="button"
-            onClick={() => onChange({ type: 'percentage', value: 0 })}
-            className={clsx(
-              'min-h-11 px-4 text-sm font-bold focus-ring',
-              value.type === 'percentage'
-                ? 'bg-coral text-white'
-                : 'bg-white text-ink',
-            )}
-            aria-pressed={value.type === 'percentage'}
+            onClick={onToggle}
+            className="min-h-11 min-w-11 flex items-center justify-center rounded-lg text-muted hover:text-danger focus-ring"
+            aria-label={`Remove ${label}`}
           >
-            %
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
-          <button
-            type="button"
-            onClick={() => onChange({ type: 'fixed', value: 0 })}
-            className={clsx(
-              'min-h-11 px-4 text-sm font-bold focus-ring',
-              value.type === 'fixed'
-                ? 'bg-coral text-white'
-                : 'bg-white text-ink',
-            )}
-            aria-pressed={value.type === 'fixed'}
-          >
-            Fixed
-          </button>
-        </fieldset>
+        </div>
       </div>
       {hint && <p className="text-xs text-muted mb-3">{hint}</p>}
 

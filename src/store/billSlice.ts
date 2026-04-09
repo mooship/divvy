@@ -21,6 +21,7 @@ interface BillActions {
   ) => void
   setCurrency: (currency: Currency) => void
   clearAllAssignments: () => void
+  saveCurrentBill: () => void
   reset: () => void
 }
 
@@ -130,6 +131,10 @@ export const useBillStore = create<Bill & BillActions>()(
         set((s) => ({
           items: s.items.map((item) => ({ ...item, assignedTo: [] })),
         })),
+      saveCurrentBill: () => {
+        const state = useBillStore.getState()
+        saveToRecent(state)
+      },
       reset: () =>
         set((state) => {
           saveToRecent(state)
