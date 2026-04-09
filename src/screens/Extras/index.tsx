@@ -4,7 +4,6 @@ import { useShallow } from 'zustand/shallow'
 import { BottomAction } from '../../components/BottomAction'
 import { PageLayout } from '../../components/PageLayout'
 import { useBillStore } from '../../store'
-import type { SharedCost } from '../../types'
 import { SharedCostRow } from './SharedCostRow'
 
 type ExtraKey = 'tip' | 'serviceFee' | 'deliveryFee' | 'tax' | 'discount'
@@ -31,14 +30,6 @@ export function Extras() {
     })),
   )
 
-  const values: Record<ExtraKey, SharedCost> = {
-    tip,
-    serviceFee,
-    deliveryFee,
-    tax,
-    discount,
-  }
-
   const [expanded, setExpanded] = useState<Record<ExtraKey, boolean>>(() => ({
     tip: true,
     serviceFee: serviceFee.value > 0,
@@ -51,7 +42,8 @@ export function Extras() {
     setExpanded((prev) => {
       const next = !prev[key]
       if (!next) {
-        setSharedCost(key, { type: values[key].type, value: 0 })
+        const current = useBillStore.getState()[key]
+        setSharedCost(key, { type: current.type, value: 0 })
       }
       return { ...prev, [key]: next }
     })
