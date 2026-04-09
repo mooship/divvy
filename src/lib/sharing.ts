@@ -87,10 +87,12 @@ export function decodeBill(encoded: string): Bill | null {
     if (!isValidBill(parsed)) {
       return null
     }
+    const bill = parsed as Omit<Bill, 'tax' | 'discount'> &
+      Partial<Pick<Bill, 'tax' | 'discount'>>
     return {
-      tax: { type: 'percentage' as const, value: 0 },
-      discount: { type: 'fixed' as const, value: 0 },
-      ...parsed,
+      ...bill,
+      tax: bill.tax ?? { type: 'percentage', value: 0 },
+      discount: bill.discount ?? { type: 'fixed', value: 0 },
     }
   } catch {
     return null
