@@ -13,6 +13,8 @@ beforeEach(() => {
     tip: { type: 'percentage', value: 0 },
     serviceFee: { type: 'fixed', value: 0 },
     deliveryFee: { type: 'fixed', value: 0 },
+    tax: { type: 'percentage', value: 0 },
+    discount: { type: 'fixed', value: 0 },
   })
   localStorage.clear()
 })

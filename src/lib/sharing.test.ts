@@ -17,6 +17,8 @@ const bill: Bill = {
   tip: { type: 'percentage', value: 10 },
   serviceFee: { type: 'fixed', value: 0 },
   deliveryFee: { type: 'fixed', value: 0 },
+  tax: { type: 'percentage', value: 0 },
+  discount: { type: 'fixed', value: 0 },
 }
 
 describe('sharing', () => {
@@ -103,5 +105,40 @@ describe('sharing', () => {
     const audBill: Bill = { ...bill, currency: 'AUD' }
     const decoded = decodeBill(encodeBill(audBill))
     expect(decoded).toEqual(audBill)
+  })
+
+  it('decodes legacy bill without tax/discount and adds defaults', () => {
+    const legacy = {
+      id: 'legacy-1',
+      currency: 'USD',
+      people: [{ id: 'a', name: 'Alice' }],
+      items: [{ id: 'i1', name: 'Pizza', price: 1000, assignedTo: [] }],
+      tip: { type: 'percentage', value: 0 },
+      serviceFee: { type: 'fixed', value: 0 },
+      deliveryFee: { type: 'fixed', value: 0 },
+    }
+    const encoded = LZString.compressToEncodedURIComponent(
+      JSON.stringify(legacy),
+    )
+    const decoded = decodeBill(encoded)
+    expect(decoded).not.toBeNull()
+    expect(decoded?.tax).toEqual({ type: 'percentage', value: 0 })
+    expect(decoded?.discount).toEqual({ type: 'fixed', value: 0 })
+  })
+
+  it('rejects bill with invalid tax shared cost', () => {
+    const bad = { ...bill, tax: { type: 'bogus', value: 10 } }
+    const encoded = LZString.compressToEncodedURIComponent(JSON.stringify(bad))
+    expect(decodeBill(encoded)).toBeNull()
+  })
+
+  it('round-trips a bill with tax and discount', () => {
+    const fullBill: Bill = {
+      ...bill,
+      tax: { type: 'percentage', value: 15 },
+      discount: { type: 'fixed', value: 500 },
+    }
+    const decoded = decodeBill(encodeBill(fullBill))
+    expect(decoded).toEqual(fullBill)
   })
 })

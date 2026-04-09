@@ -9,6 +9,8 @@ const EMPTY_BILL = {
   tip: { type: 'percentage' as const, value: 0 },
   serviceFee: { type: 'fixed' as const, value: 0 },
   deliveryFee: { type: 'fixed' as const, value: 0 },
+  tax: { type: 'percentage' as const, value: 0 },
+  discount: { type: 'fixed' as const, value: 0 },
 }
 
 beforeEach(() => {
@@ -74,6 +76,30 @@ describe('billStore', () => {
     const state = useBillStore.getState()
     expect(state.people).toHaveLength(0)
     expect(state.id).toBeTruthy()
+  })
+
+  it('clearAllAssignments sets all items assignedTo to empty', () => {
+    useBillStore.getState().addPerson('Alice')
+    useBillStore.getState().addPerson('Bob')
+    const { people } = useBillStore.getState()
+    useBillStore.getState().addItem('Pizza', 2000)
+    useBillStore.getState().addItem('Salad', 1000)
+    const { items } = useBillStore.getState()
+    useBillStore.getState().assignItem(items[0].id, [people[0].id])
+    useBillStore.getState().assignItem(items[1].id, [people[1].id])
+    useBillStore.getState().clearAllAssignments()
+    const updated = useBillStore.getState().items
+    expect(updated[0].assignedTo).toEqual([])
+    expect(updated[1].assignedTo).toEqual([])
+  })
+
+  it('updateItem updates name and price', () => {
+    useBillStore.getState().addItem('Pizza', 2000)
+    const itemId = useBillStore.getState().items[0].id
+    useBillStore.getState().updateItem(itemId, { name: 'Burger', price: 1500 })
+    const updated = useBillStore.getState().items[0]
+    expect(updated.name).toBe('Burger')
+    expect(updated.price).toBe(1500)
   })
 })
 

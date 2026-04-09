@@ -40,6 +40,12 @@ function isValidBill(obj: unknown): obj is Bill {
   ) {
     return false
   }
+  if (b.tax !== undefined && !isValidSharedCost(b.tax)) {
+    return false
+  }
+  if (b.discount !== undefined && !isValidSharedCost(b.discount)) {
+    return false
+  }
   for (const p of b.people) {
     if (typeof p !== 'object' || p === null) {
       return false
@@ -81,7 +87,14 @@ export function decodeBill(encoded: string): Bill | null {
     if (!isValidBill(parsed)) {
       return null
     }
-    return parsed
+    const bill = parsed as Bill
+    if (!bill.tax) {
+      bill.tax = { type: 'percentage', value: 0 }
+    }
+    if (!bill.discount) {
+      bill.discount = { type: 'fixed', value: 0 }
+    }
+    return bill
   } catch {
     return null
   }

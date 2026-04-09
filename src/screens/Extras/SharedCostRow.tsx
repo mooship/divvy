@@ -7,6 +7,7 @@ interface SharedCostRowProps {
   value: SharedCost
   currency: Currency
   onChange: (cost: SharedCost) => void
+  hint?: string
 }
 
 export function SharedCostRow({
@@ -14,10 +15,12 @@ export function SharedCostRow({
   value,
   currency,
   onChange,
+  hint,
 }: SharedCostRowProps) {
   const labelId = label.toLowerCase().replace(/\s+/g, '-')
   return (
     <section className="card p-4" aria-labelledby={labelId}>
+      {hint && <p className="text-xs text-muted mb-2">{hint}</p>}
       <div className="flex items-center justify-between mb-3">
         <h2 id={labelId} className="font-bold text-ink">
           {label}

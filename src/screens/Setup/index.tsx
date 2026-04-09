@@ -26,6 +26,7 @@ export function Setup() {
     )
   const setDefaultCurrency = usePrefsStore((s) => s.setDefaultCurrency)
   const [nameInput, setNameInput] = useState('')
+  const [nameError, setNameError] = useState('')
   const [removingPersonId, setRemovingPersonId] = useState<string | null>(null)
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false)
 
@@ -43,11 +44,14 @@ export function Setup() {
   const handleAddPerson = () => {
     const trimmed = nameInput.trim()
     if (!trimmed) {
+      setNameError('Name cannot be empty')
       return
     }
     if (isDuplicateName(trimmed, people)) {
+      setNameError('This name is already taken')
       return
     }
+    setNameError('')
     addPerson(trimmed)
     setNameInput('')
   }
@@ -148,10 +152,16 @@ export function Setup() {
                   inputMode="text"
                   autoComplete="off"
                   value={nameInput}
-                  onChange={(e) => setNameInput(e.target.value)}
+                  onChange={(e) => {
+                    setNameInput(e.target.value)
+                    if (nameError) {
+                      setNameError('')
+                    }
+                  }}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddPerson()}
                   placeholder="Add a name..."
-                  className="input-text focus-ring"
+                  maxLength={30}
+                  className={`input-text focus-ring${nameError ? ' border-danger' : ''}`}
                 />
               </div>
               <button
@@ -164,6 +174,11 @@ export function Setup() {
                 <Plus className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
+            {nameError && (
+              <p className="text-sm text-danger mt-1" role="alert">
+                {nameError}
+              </p>
+            )}
           </section>
         </div>
 

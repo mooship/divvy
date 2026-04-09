@@ -16,10 +16,11 @@ interface BillActions {
   removeItem: (id: string) => void
   assignItem: (itemId: string, personIds: string[]) => void
   setSharedCost: (
-    key: 'tip' | 'serviceFee' | 'deliveryFee',
+    key: 'tip' | 'serviceFee' | 'deliveryFee' | 'tax' | 'discount',
     cost: SharedCost,
   ) => void
   setCurrency: (currency: Currency) => void
+  clearAllAssignments: () => void
   reset: () => void
 }
 
@@ -69,6 +70,8 @@ const DEFAULT_BILL: Bill = {
   tip: { type: 'percentage', value: 0 },
   serviceFee: { type: 'fixed', value: 0 },
   deliveryFee: { type: 'fixed', value: 0 },
+  tax: { type: 'percentage', value: 0 },
+  discount: { type: 'fixed', value: 0 },
 }
 
 export const useBillStore = create<Bill & BillActions>()(
@@ -110,6 +113,10 @@ export const useBillStore = create<Bill & BillActions>()(
         })),
       setSharedCost: (key, cost) => set({ [key]: cost }),
       setCurrency: (currency) => set({ currency }),
+      clearAllAssignments: () =>
+        set((s) => ({
+          items: s.items.map((item) => ({ ...item, assignedTo: [] })),
+        })),
       reset: () =>
         set((state) => {
           saveToRecent(state)

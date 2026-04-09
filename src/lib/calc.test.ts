@@ -13,6 +13,8 @@ const makeBill = (overrides: Partial<Bill> = {}): Bill => ({
   tip: { type: 'percentage', value: 0 },
   serviceFee: { type: 'fixed', value: 0 },
   deliveryFee: { type: 'fixed', value: 0 },
+  tax: { type: 'percentage', value: 0 },
+  discount: { type: 'fixed', value: 0 },
   ...overrides,
 })
 
@@ -161,6 +163,99 @@ describe('calculateTotals', () => {
     // 'ghost' is not in people, but still in assignedTo so price is split 2 ways
     expect(alice.itemsSubtotal).toBe(500)
     expect(alice.total).toBe(500)
+  })
+
+  it('distributes percentage tax proportionally', () => {
+    const bill = makeBill({
+      items: [
+        { id: 'i1', name: 'Big', price: 6000, assignedTo: ['alice'] },
+        { id: 'i2', name: 'Small', price: 2000, assignedTo: ['bob'] },
+      ],
+      tax: { type: 'percentage', value: 10 },
+    })
+    const totals = calculateTotals(bill)
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
+    const alice = totals.find((t) => t.personId === 'alice')!
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
+    const bob = totals.find((t) => t.personId === 'bob')!
+    expect(alice.taxShare).toBe(600)
+    expect(bob.taxShare).toBe(200)
+    expect(alice.total).toBe(6600)
+    expect(bob.total).toBe(2200)
+  })
+
+  it('distributes fixed tax proportionally', () => {
+    const bill = makeBill({
+      items: [
+        { id: 'i1', name: 'A', price: 3000, assignedTo: ['alice'] },
+        { id: 'i2', name: 'B', price: 1000, assignedTo: ['bob'] },
+      ],
+      tax: { type: 'fixed', value: 400 },
+    })
+    const totals = calculateTotals(bill)
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
+    const alice = totals.find((t) => t.personId === 'alice')!
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
+    const bob = totals.find((t) => t.personId === 'bob')!
+    expect(alice.taxShare).toBe(300)
+    expect(bob.taxShare).toBe(100)
+  })
+
+  it('subtracts discount from totals proportionally', () => {
+    const bill = makeBill({
+      items: [
+        { id: 'i1', name: 'A', price: 6000, assignedTo: ['alice'] },
+        { id: 'i2', name: 'B', price: 2000, assignedTo: ['bob'] },
+      ],
+      discount: { type: 'fixed', value: 800 },
+    })
+    const totals = calculateTotals(bill)
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
+    const alice = totals.find((t) => t.personId === 'alice')!
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
+    const bob = totals.find((t) => t.personId === 'bob')!
+    expect(alice.discountShare).toBe(600)
+    expect(bob.discountShare).toBe(200)
+    expect(alice.total).toBe(5400) // 6000 - 600
+    expect(bob.total).toBe(1800) // 2000 - 200
+  })
+
+  it('subtracts percentage discount from totals', () => {
+    const bill = makeBill({
+      items: [
+        { id: 'i1', name: 'A', price: 5000, assignedTo: ['alice'] },
+        { id: 'i2', name: 'B', price: 5000, assignedTo: ['bob'] },
+      ],
+      discount: { type: 'percentage', value: 20 },
+    })
+    const totals = calculateTotals(bill)
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
+    const alice = totals.find((t) => t.personId === 'alice')!
+    // biome-ignore lint/style/noNonNullAssertion: test assertion — person is guaranteed to exist
+    const bob = totals.find((t) => t.personId === 'bob')!
+    expect(alice.discountShare).toBe(1000)
+    expect(bob.discountShare).toBe(1000)
+    expect(alice.total).toBe(4000)
+    expect(bob.total).toBe(4000)
+  })
+
+  it('applies tax and discount together correctly', () => {
+    const bill = makeBill({
+      items: [
+        {
+          id: 'i1',
+          name: 'Dinner',
+          price: 10000,
+          assignedTo: ['alice', 'bob'],
+        },
+      ],
+      tax: { type: 'percentage', value: 10 },
+      discount: { type: 'fixed', value: 1000 },
+    })
+    const totals = calculateTotals(bill)
+    const grand = totals.reduce((s, t) => s + t.total, 0)
+    // subtotal: 10000, tax: 1000, discount: -1000 → grand: 10000
+    expect(grand).toBe(10000)
   })
 })
 

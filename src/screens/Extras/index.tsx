@@ -7,16 +7,25 @@ import { SharedCostRow } from './SharedCostRow'
 
 export function Extras() {
   const navigate = useNavigate()
-  const { tip, serviceFee, deliveryFee, setSharedCost, currency } =
-    useBillStore(
-      useShallow((s) => ({
-        tip: s.tip,
-        serviceFee: s.serviceFee,
-        deliveryFee: s.deliveryFee,
-        setSharedCost: s.setSharedCost,
-        currency: s.currency,
-      })),
-    )
+  const {
+    tip,
+    serviceFee,
+    deliveryFee,
+    tax,
+    discount,
+    setSharedCost,
+    currency,
+  } = useBillStore(
+    useShallow((s) => ({
+      tip: s.tip,
+      serviceFee: s.serviceFee,
+      deliveryFee: s.deliveryFee,
+      tax: s.tax,
+      discount: s.discount,
+      setSharedCost: s.setSharedCost,
+      currency: s.currency,
+    })),
+  )
 
   return (
     <PageLayout backTo="/items" step={3}>
@@ -45,6 +54,19 @@ export function Extras() {
               value={deliveryFee}
               currency={currency}
               onChange={(cost) => setSharedCost('deliveryFee', cost)}
+            />
+            <SharedCostRow
+              label="Tax"
+              value={tax}
+              currency={currency}
+              onChange={(cost) => setSharedCost('tax', cost)}
+              hint="Skip if tax is already included in your prices."
+            />
+            <SharedCostRow
+              label="Discount"
+              value={discount}
+              currency={currency}
+              onChange={(cost) => setSharedCost('discount', cost)}
             />
           </div>
         </div>
