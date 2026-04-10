@@ -5,17 +5,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm dev          # dev server
-pnpm build        # tsc -b && vite build
-pnpm test         # vitest watch
-pnpm test:run     # vitest run (CI)
-pnpm check        # biome check --write . (lint + format, auto-fix)
-pnpm tsc --noEmit # type-check only
+bun run dev       # dev server
+bun run build     # tsc -b && vite build
+bun run test      # vitest watch
+bun run test:run  # vitest run (CI)
+bun run check     # biome check --write . (lint + format, auto-fix)
+bunx tsc --noEmit # type-check only
 ```
 
 Run a single test file:
 ```bash
-pnpm vitest run src/lib/calc.test.ts
+bunx vitest run src/lib/calc.test.ts
 ```
 
 ## Architecture
@@ -39,7 +39,7 @@ pnpm vitest run src/lib/calc.test.ts
 
 **Styling:** UnoCSS with `@unocss/preset-wind4`. Theme key is `font` (not `fontFamily`), value is a plain string. Custom shortcuts: `card`, `btn-primary`, `btn-ghost`, `input-text`, `focus-ring`. Colours: `bg`, `surface`, `coral`, `teal`, `ink`, `muted`, `danger`.
 
-**Linting:** Biome (no ESLint). Single quotes, no semicolons. Run `pnpm check` to auto-fix before committing.
+**Linting:** Biome (no ESLint). Single quotes, no semicolons. Run `bun run check` to auto-fix before committing.
 
 ## Code conventions
 

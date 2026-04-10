@@ -27,21 +27,23 @@ A PWA for splitting restaurant bills fairly. Scan a receipt, assign items to peo
 
 ## Getting started
 
+Requirements: Bun 1.3+
+
 ```bash
-pnpm install
-pnpm dev
+bun install
+bun run dev
 ```
 
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
-| `pnpm dev` | Start dev server |
-| `pnpm build` | Production build |
-| `pnpm preview` | Preview production build |
-| `pnpm test` | Run tests in watch mode |
-| `pnpm test:run` | Run tests once |
-| `pnpm check` | Biome lint + format (auto-fix) |
+| `bun run dev` | Start dev server |
+| `bun run build` | Production build |
+| `bun run preview` | Preview production build |
+| `bun run test` | Run tests in watch mode |
+| `bun run test:run` | Run tests once |
+| `bun run check` | Biome lint + format (auto-fix) |
 
 ## Project structure
 
