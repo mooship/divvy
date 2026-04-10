@@ -4,6 +4,9 @@ node_modules/
 # Build output
 dist/
 
+# Debug logs
+bun-debug.log*
+
 # Vite
 .vite/
 
